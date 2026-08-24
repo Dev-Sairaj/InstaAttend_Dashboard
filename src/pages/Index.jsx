@@ -101,15 +101,15 @@ const Index = () => {
           <div className="lg:col-span-2 space-y-4 md:space-y-6">
             <div className="flex flex-col items-center text-center md:flex-row md:justify-between md:items-center md:text-left gap-4">
               <div>
-                <h1 className="text-2xl font-bold text-gray-800">
+                <h1 className="text-2xl md:text-3xl font-bold text-gradient-primary animate-fade-in">
                   Dashboard
                 </h1>
-                <p className="text-gray-500">Welcome back, {username} 👋</p>
+                <p className="text-muted-foreground animate-fade-in">Welcome back, {username} 👋</p>
               </div>
             </div>
 
             {/* Today's Attendance Status — now the primary hero section */}
-            <Card className="border-none shadow-sm">
+            <Card className="animate-fade-in">
               <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                 <div>
                   <CardTitle>Today's Attendance Status</CardTitle>
@@ -119,15 +119,15 @@ const Index = () => {
                       : "Live breakdown across the team"}
                   </CardDescription>
                 </div>
-                <div className="text-sm text-gray-500">
-                  <span className="font-semibold text-gray-800">
+                <div className="text-sm text-muted-foreground">
+                  <span className="font-semibold text-foreground tabular-nums">
                     {stat.totalEmployees}
                   </span>{" "}
                   total employees
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 justify-items-center">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 justify-items-center stagger-children">
                   <CircularStat
                     percentage={stat.presentPercentage}
                     color="#16A34A"
@@ -157,7 +157,7 @@ const Index = () => {
             </Card>
 
             {/* Weekly Trends bar chart (unchanged data source) */}
-            <Card className="border-none shadow-sm">
+            <Card className="animate-fade-in">
               <CardHeader>
                 <CardTitle>Weekly Trends</CardTitle>
                 <CardDescription>Last 7 days</CardDescription>
@@ -169,14 +169,14 @@ const Index = () => {
                       data={attendanceData}
                       margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
                     >
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="date" />
-                      <YAxis allowDecimals={false} />
-                      <Tooltip />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#D9F5E9" />
+                      <XAxis dataKey="date" tick={{ fill: "#647589", fontSize: 12 }} axisLine={{ stroke: "#D9F5E9" }} tickLine={false} />
+                      <YAxis allowDecimals={false} tick={{ fill: "#647589", fontSize: 12 }} axisLine={{ stroke: "#D9F5E9" }} tickLine={false} />
+                      <Tooltip cursor={{ fill: "rgba(16,185,129,0.06)" }} contentStyle={{ background: "#FFFFFF", border: "1px solid #D9F5E9", borderRadius: 12, boxShadow: "0 10px 30px -12px rgba(5,150,105,0.28)", color: "#0F172A" }} />
                       <Legend />
-                      <Bar dataKey="present" fill="#16A34A" name="Present" />
-                      <Bar dataKey="absent" fill="#DC2626" name="Absent" />
-                      <Bar dataKey="late" fill="#F59E0B" name="Late" />
+                      <Bar dataKey="present" fill="#16A34A" name="Present" radius={[6, 6, 0, 0]} animationDuration={900} />
+                      <Bar dataKey="absent" fill="#DC2626" name="Absent" radius={[6, 6, 0, 0]} animationDuration={1100} />
+                      <Bar dataKey="late" fill="#F59E0B" name="Late" radius={[6, 6, 0, 0]} animationDuration={1300} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -187,7 +187,7 @@ const Index = () => {
           {/* ---- Right rail: today pill + live calendar + notifications ---- */}
           <div className="space-y-4 md:space-y-6">
             <div className="flex justify-center lg:justify-end">
-              <div className="inline-flex items-center px-3 py-1 rounded-full bg-instattend-50 text-instattend-600">
+              <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 shadow-soft animate-slide-in-right">
                 <span className="text-sm font-medium">
                   Today:{" "}
                   {new Date().toLocaleDateString("en-US", {
