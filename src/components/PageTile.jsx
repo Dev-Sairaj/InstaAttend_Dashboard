@@ -13,7 +13,7 @@ const PageTile = ({ tile }) => {
           <p className="text-sm text-gray-500">{tile.description}</p>
         </div>
         <div className="mt-2 md:mt-0">
-          <span className="bg-purple-100 text-purple-700 text-sm font-medium px-3 py-1 rounded-full">
+          <span className="bg-instattend-100 text-instattend-700 text-sm font-medium px-3 py-1 rounded-full">
             Today: {today}
           </span>
         </div>

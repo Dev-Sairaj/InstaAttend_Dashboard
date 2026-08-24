@@ -32,7 +32,7 @@ const stats = [
         value: "8.1",
         subText: "+0.3 hrs from last week",
         icon: <FaClock className="text-white" />,
-        iconBg: "bg-purple-500",
+        iconBg: "bg-instattend-500",
     },
 ];
 

@@ -181,7 +181,7 @@ const BulkUpload = ({ onUpload }) => {
       <div className="flex justify-center mt-4">
         <button
           onClick={handleSubmit}
-          className="px-5 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+          className="px-5 py-2 bg-instattend-600 text-white rounded-md hover:bg-instattend-700"
         >
           Upload Employees
         </button>
