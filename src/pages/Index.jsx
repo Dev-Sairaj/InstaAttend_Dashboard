@@ -130,25 +130,25 @@ const Index = () => {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 justify-items-center">
                   <CircularStat
                     percentage={stat.presentPercentage}
-                    color="#22c55e"
+                    color="#16A34A"
                     label="Present"
                     value={stat.presentToday}
                   />
                   <CircularStat
                     percentage={stat.latePercentage}
-                    color="#f59e0b"
+                    color="#F59E0B"
                     label="Late"
                     value={stat.lateToday}
                   />
                   <CircularStat
                     percentage={stat.absentPercentage}
-                    color="#ef4444"
+                    color="#DC2626"
                     label="Absent"
                     value={stat.absentToday}
                   />
                   <CircularStat
                     percentage={stat.leavePercentage}
-                    color="#8262ef"
+                    color="#8B5CF6"
                     label="On Leave"
                     value={stat.onLeave}
                   />
@@ -174,9 +174,9 @@ const Index = () => {
                       <YAxis allowDecimals={false} />
                       <Tooltip />
                       <Legend />
-                      <Bar dataKey="present" fill="#4ade80" name="Present" />
-                      <Bar dataKey="absent" fill="#f87171" name="Absent" />
-                      <Bar dataKey="late" fill="#fbbf24" name="Late" />
+                      <Bar dataKey="present" fill="#16A34A" name="Present" />
+                      <Bar dataKey="absent" fill="#DC2626" name="Absent" />
+                      <Bar dataKey="late" fill="#F59E0B" name="Late" />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>

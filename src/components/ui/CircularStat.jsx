@@ -6,7 +6,7 @@ import React from "react";
  * callers are expected to fall back to 0 when the backend has no data,
  * rather than this component inventing anything.
  */
-const CircularStat = ({ percentage = 0, color = "#22c55e", label, value }) => {
+const CircularStat = ({ percentage = 0, color = "#10B981", label, value }) => {
   const safePct = Math.min(100, Math.max(0, Number(percentage) || 0));
   const deg = safePct * 3.6;
 
@@ -15,7 +15,7 @@ const CircularStat = ({ percentage = 0, color = "#22c55e", label, value }) => {
       <div
         className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center"
         style={{
-          background: `conic-gradient(${color} ${deg}deg, #eef0f3 ${deg}deg)`,
+          background: `conic-gradient(${color} ${deg}deg, #D9F5E9 ${deg}deg)`,
         }}
       >
         <div className="absolute w-11 h-11 sm:w-14 sm:h-14 bg-white rounded-full flex items-center justify-center">
