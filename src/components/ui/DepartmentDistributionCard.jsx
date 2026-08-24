@@ -5,12 +5,12 @@ import { departmentService } from "../../api/services/department.service.js";
 import { Card, CardContent, CardHeader, CardTitle } from "./card";
 
 const BAR_COLORS = [
-  "#8262ef",
-  "#22c55e",
-  "#3b82f6",
-  "#f59e0b",
-  "#ef4444",
-  "#14b8a6",
+  "#10B981",
+  "#16A34A",
+  "#0EA5E9",
+  "#F59E0B",
+  "#DC2626",
+  "#8B5CF6",
 ];
 
 /**

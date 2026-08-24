@@ -22,7 +22,7 @@ const WEEKDAY_LABELS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
  * Compact month calendar for the dashboard's top-right rail.
  *
  * Wired to GET /dashboard/attendance-calendar (via dashboardService).
- * Days that have a real attendance record get a small purple dot under
+ * Days that have a real attendance record get a small mint dot under
  * the date — days with no backend data simply show no dot. Nothing here
  * is fabricated; if the API returns nothing for a month, the calendar
  * still renders correctly, just without indicators.

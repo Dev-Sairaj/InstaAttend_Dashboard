@@ -214,7 +214,7 @@ const UpdateEmployeeForm = ({ onClose, selectedEmployee, departments, designatio
               </button>
               <button
                 type="submit"
-                className="px-5 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+                className="px-5 py-2 bg-instattend-600 text-white rounded-md hover:bg-instattend-700"
               >
                 Update Employee
               </button>
@@ -251,7 +251,7 @@ const FormSelect = ({ label, name, value, onChange, error, options, placeholder 
           value={value}
           onChange={onChange}
           className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 ${
-              error ? "border-red-500 focus:ring-red-500" : "focus:ring-purple-500"
+              error ? "border-red-500 focus:ring-red-500" : "focus:ring-instattend-500"
           }`}
       >
         <option value="" disabled hidden>

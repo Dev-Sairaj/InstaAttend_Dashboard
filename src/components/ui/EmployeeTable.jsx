@@ -73,7 +73,7 @@ const EmployeeTable = ({
           <button
             key={n}
             onClick={() => setCurrentPage(n)}
-            className={`px-3 py-1 rounded ${currentPage === n ? "bg-purple-100 text-purple-700" : "hover:bg-gray-100"}`}
+            className={`px-3 py-1 rounded ${currentPage === n ? "bg-instattend-100 text-instattend-700" : "hover:bg-gray-100"}`}
           >
             {n}
           </button>

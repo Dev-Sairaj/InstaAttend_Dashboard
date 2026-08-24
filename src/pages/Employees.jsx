@@ -241,7 +241,7 @@ const Employees = () => {
           <div className="flex flex-row gap-2 w-full sm:w-auto justify-center sm:justify-end">
             <button
               onClick={onAddEmployeeClick}
-              className="flex items-center justify-center gap-2 bg-purple-600 text-white px-3 py-2 sm:px-4 sm:py-2 rounded shadow hover:bg-purple-700 text-sm sm:text-base"
+              className="flex items-center justify-center gap-2 bg-instattend-600 text-white px-3 py-2 sm:px-4 sm:py-2 rounded shadow hover:bg-instattend-700 text-sm sm:text-base"
             >
               <UserPlus className="h-4 w-4" />
               <span className="whitespace-nowrap">Add New Employee</span>
@@ -268,7 +268,7 @@ const Employees = () => {
                 setSearchTerm(e.target.value);
                 setCurrentPage(1);
               }}
-              className="w-full pl-10 pr-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm sm:text-base"
+              className="w-full pl-10 pr-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-instattend-500 text-sm sm:text-base"
             />
           </div>
           <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0 justify-center sm:justify-end">
@@ -277,14 +277,14 @@ const Employees = () => {
                 onClick={() => setShowFilterOptions(!showFilterOptions)}
                 className={`flex items-center justify-center gap-2 px-3 py-2 border rounded-md text-sm sm:text-base ${
                   activeFilterCount > 0
-                    ? "border-purple-500 bg-purple-50 text-purple-700"
+                    ? "border-instattend-500 bg-instattend-50 text-instattend-700"
                     : "border-gray-300 hover:bg-gray-100"
                 }`}
               >
                 <Filter className="h-4 w-4" />
                 <span className="hidden xs:inline">Filter</span>
                 {activeFilterCount > 0 && (
-                  <span className="bg-purple-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  <span className="bg-instattend-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     {activeFilterCount}
                   </span>
                 )}
@@ -311,7 +311,7 @@ const Employees = () => {
                         setFilterDepartment(e.target.value);
                         setCurrentPage(1);
                       }}
-                      className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-instattend-500"
                     >
                       <option value="">All Departments</option>
                       {departments.map((dept) => (
@@ -332,7 +332,7 @@ const Employees = () => {
                         setFilterDesignation(e.target.value);
                         setCurrentPage(1);
                       }}
-                      className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-instattend-500"
                     >
                       <option value="">All Designations</option>
                       {designations.map((desig) => (
@@ -353,7 +353,7 @@ const Employees = () => {
                         setFilterStatus(e.target.value);
                         setCurrentPage(1);
                       }}
-                      className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-instattend-500"
                     >
                       <option value="">All Statuses</option>
                       <option value="Active">Active</option>
@@ -368,7 +368,7 @@ const Employees = () => {
                     <select
                       value={sortBy}
                       onChange={(e) => setSortBy(e.target.value)}
-                      className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm mb-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm mb-2 focus:outline-none focus:ring-2 focus:ring-instattend-500"
                     >
                       <option value="">None</option>
                       <option value="name">Name</option>
@@ -382,7 +382,7 @@ const Employees = () => {
                           onClick={() => setSortOrder("asc")}
                           className={`flex-1 flex items-center justify-center gap-1 text-xs px-2 py-1.5 rounded-md border ${
                             sortOrder === "asc"
-                              ? "bg-purple-600 text-white border-purple-600"
+                              ? "bg-instattend-600 text-white border-instattend-600"
                               : "border-gray-300 hover:bg-gray-50"
                           }`}
                         >
@@ -392,7 +392,7 @@ const Employees = () => {
                           onClick={() => setSortOrder("desc")}
                           className={`flex-1 flex items-center justify-center gap-1 text-xs px-2 py-1.5 rounded-md border ${
                             sortOrder === "desc"
-                              ? "bg-purple-600 text-white border-purple-600"
+                              ? "bg-instattend-600 text-white border-instattend-600"
                               : "border-gray-300 hover:bg-gray-50"
                           }`}
                         >
@@ -404,7 +404,7 @@ const Employees = () => {
 
                   <button
                     onClick={clearFilters}
-                    className="w-full text-center text-sm text-purple-600 hover:text-purple-800 font-medium pt-1"
+                    className="w-full text-center text-sm text-instattend-600 hover:text-instattend-800 font-medium pt-1"
                   >
                     Clear all filters
                   </button>

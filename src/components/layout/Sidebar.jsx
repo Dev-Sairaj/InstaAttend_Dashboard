@@ -37,90 +37,107 @@ const Sidebar = ({ collapsed, onToggle }) => {
   return (
     <aside
       className={cn(
-        "bg-white border-r border-gray-200 h-screen transition-all duration-300 flex flex-col",
+        "relative bg-card border-r border-border h-screen flex flex-col shadow-soft",
+        "transition-[width] duration-500 ease-smooth",
         collapsed ? "w-20" : "w-64",
       )}
     >
-      <div className="p-4 border-b flex items-center justify-between">
+      {/* subtle brand wash at the top of the rail */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-primary/8 to-transparent" />
+
+      <div className="relative p-4 border-b border-border flex items-center justify-between">
         {!collapsed && (
-          <div className="flex items-center">
-            <span className="text-2xl font-bold text-instattend-500">
+          <div className="flex items-center animate-fade-in">
+            <span className="text-2xl font-bold text-gradient-primary">
               Insta Attend
             </span>
           </div>
         )}
         {collapsed && (
-          <div className="flex items-center mx-auto">
-            <span className="text-2xl font-bold text-instattend-500">IA</span>
+          <div className="flex items-center mx-auto animate-scale-in">
+            <span className="text-2xl font-bold text-gradient-primary">IA</span>
           </div>
         )}
         <button
           onClick={onToggle}
-          className="text-gray-400 hover:text-gray-600 focus:outline-none"
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          className="text-muted-foreground hover:text-primary rounded-md p-1 transition-all duration-300 ease-smooth hover:bg-primary/10 active:scale-90 focus-ring"
         >
-          {collapsed ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 5l7 7-7 7M5 5l7 7-7 7"
-              />
-            </svg>
-          ) : (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
-              />
-            </svg>
-          )}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className={cn(
+              "h-6 w-6 transition-transform duration-500 ease-smooth",
+              collapsed && "rotate-180",
+            )}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
+            />
+          </svg>
         </button>
       </div>
-      <nav className="flex-1 pt-6">
-        <ul>
-          {navItems.map((item) => (
-            <li key={item.name} className="mb-2 px-4">
-              <Link
-                to={item.path}
-                className={cn(
-                  "flex items-center px-4 py-3 text-gray-600 rounded-lg hover:bg-instattend-50 hover:text-instattend-500",
-                  location.pathname === item.path &&
-                    "bg-instattend-50 text-instattend-500",
-                )}
-              >
-                <item.icon className={cn("h-5 w-5")} />
-                {!collapsed && <span className="ml-4">{item.name}</span>}
-              </Link>
-            </li>
-          ))}
+
+      <nav className="relative flex-1 pt-6 overflow-y-auto">
+        <ul className="stagger-children">
+          {navItems.map((item) => {
+            const active = location.pathname === item.path;
+            return (
+              <li key={item.name} className="mb-2 px-4">
+                <Link
+                  to={item.path}
+                  title={collapsed ? item.name : undefined}
+                  className={cn(
+                    "group relative flex items-center px-4 py-3 rounded-lg overflow-hidden",
+                    "text-muted-foreground transition-all duration-300 ease-smooth",
+                    "hover:bg-primary/10 hover:text-primary hover:translate-x-1",
+                    active &&
+                      "bg-primary/12 text-primary font-medium shadow-soft",
+                  )}
+                >
+                  {/* active indicator bar */}
+                  <span
+                    className={cn(
+                      "absolute left-0 top-1/2 -translate-y-1/2 h-6 w-1 rounded-r-full gradient-primary",
+                      "transition-all duration-300 ease-spring",
+                      active ? "opacity-100 scale-y-100" : "opacity-0 scale-y-0",
+                    )}
+                  />
+                  <item.icon
+                    className={cn(
+                      "h-5 w-5 shrink-0 transition-transform duration-300 ease-spring",
+                      "group-hover:scale-110",
+                      active && "scale-110",
+                    )}
+                  />
+                  {!collapsed && (
+                    <span className="ml-4 whitespace-nowrap">{item.name}</span>
+                  )}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </nav>
-      <div className="p-4 border-t border-gray-200">
+
+      <div className="relative p-4 border-t border-border">
         <div className="flex items-center">
-          <div className="h-8 w-8 rounded-full bg-instattend-200 flex items-center justify-center text-instattend-700 font-medium">
+          <div className="h-8 w-8 rounded-full bg-primary/15 flex items-center justify-center text-primary font-semibold transition-transform duration-300 ease-spring hover:scale-110">
             {roleInitial}
           </div>
           {!collapsed && currentUser && (
-            <div className="ml-3">
-              <p className="text-sm font-medium text-gray-700">
+            <div className="ml-3 animate-fade-in">
+              <p className="text-sm font-medium text-foreground">
                 {currentUser.username}
               </p>
-              <p className="text-xs text-gray-500">{currentUser.email}</p>
+              <p className="text-xs text-muted-foreground">
+                {currentUser.email}
+              </p>
             </div>
           )}
         </div>

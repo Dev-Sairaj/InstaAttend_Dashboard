@@ -22,7 +22,7 @@ const FormField = ({ label, name, type, placeholder, value, onChange, error }) =
           onChange={onChange}
           placeholder={placeholder}
           className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 ${
-              error ? 'border-red-500 focus:ring-red-500' : 'focus:ring-purple-500'
+              error ? 'border-red-500 focus:ring-red-500' : 'focus:ring-instattend-500'
           }`}
           aria-invalid={!!error}
       />
@@ -181,7 +181,7 @@ const AddEmployeeForm = ({ onClose, departments, designation }) => {
           <button type="button" onClick={onClose} className="px-5 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100">
             Cancel
           </button>
-          <button type="submit" className="px-5 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
+          <button type="submit" className="px-5 py-2 bg-instattend-600 text-white rounded-md hover:bg-instattend-700">
             Add Employee
           </button>
         </div>

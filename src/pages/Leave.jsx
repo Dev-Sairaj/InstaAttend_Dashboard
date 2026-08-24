@@ -282,7 +282,7 @@ const Leave = () => {
                       {leaveTypeStats.other}
                     </h3>
                   </div>
-                  <div className="p-3 rounded-full bg-purple-100 text-purple-700">
+                  <div className="p-3 rounded-full bg-instattend-100 text-instattend-700">
                     <Calendar className="h-5 w-5" />
                   </div>
                 </div>
