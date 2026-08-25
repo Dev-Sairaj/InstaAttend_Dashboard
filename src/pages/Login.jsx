@@ -92,7 +92,7 @@ const Login = () => {
           <p className="text-white/80 mt-2 drop-shadow">HR Management System</p>
         </div>
 
-        <Card className="w-full shadow-lg border-instattend-200">
+        <Card className="w-full shadow-2xl border-instattend-200 backdrop-blur-md bg-card/95">
           <CardHeader className="space-y-2">
             <CardTitle className="text-2xl text-center">Sign In</CardTitle>
             <CardDescription className="text-center">
