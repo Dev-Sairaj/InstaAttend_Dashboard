@@ -5,7 +5,7 @@
 @layer base {
   :root {
     /* Core surfaces */
-    --background: 165 74% 97%;      /* #F0FDF9 */
+    --background: 210 20% 96%;      /* #F3F5F7 light gray */
     --foreground: 222 47% 11%;      /* #0F172A */
 
     --card: 0 0% 100%;              /* #FFFFFF */
@@ -32,7 +32,8 @@
     --destructive-foreground: 0 0% 100%;
 
     --border: 156 63% 91%;          /* #D9F5E9 */
-    --input: 156 63% 91%;
+    --input: 214 20% 86%;           /* neutral input border */
+    --input-background: 0 0% 100%;  /* fields stay white on gray page */
     --ring: 160 84% 39%;
 
     /* Attendance status tokens */
@@ -81,7 +82,8 @@
     --destructive-foreground: 0 0% 100%;
 
     --border: 192 25% 20%;
-    --input: 192 25% 20%;
+    --input: 192 25% 26%;
+    --input-background: 192 32% 13%;
     --ring: 160 84% 45%;
   }
 }
