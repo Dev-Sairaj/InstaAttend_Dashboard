@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { authService } from "../api/services/auth.service";
+import loginBgAsset from "../assets/login-bg.png.asset.json";
 
 import {
   Form,
