@@ -71,11 +71,25 @@ const Login = () => {
   const togglePassword = () => setShowPassword(!showPassword);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-instattend-50 to-instattend-100">
-      <div className="w-full max-w-md px-4">
+    <div
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+    >
+      {/* Blurred background image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center scale-110 blur-xl"
+        style={{ backgroundImage: `url(${loginBgAsset.url})` }}
+        aria-hidden="true"
+      />
+      {/* Dark overlay for contrast & legibility */}
+      <div
+        className="absolute inset-0 bg-foreground/55 backdrop-brightness-75"
+        aria-hidden="true"
+      />
+
+      <div className="relative z-10 w-full max-w-md px-4">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-instattend-800">Insta Attend</h1>
-          <p className="text-gray-600 mt-2">HR Management System</p>
+          <h1 className="text-3xl font-bold text-white drop-shadow-lg">Insta Attend</h1>
+          <p className="text-white/80 mt-2 drop-shadow">HR Management System</p>
         </div>
 
         <Card className="w-full shadow-lg border-instattend-200">
