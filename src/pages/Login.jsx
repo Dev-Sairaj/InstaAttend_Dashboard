@@ -74,10 +74,14 @@ const Login = () => {
     <div
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* Blurred background image */}
+      {/* Blurred background image — stretched so the full dashboard shows */}
       <div
-        className="absolute inset-0 bg-cover bg-center blur-xs"
-        style={{ backgroundImage: `url(${loginBgAsset.url})` }}
+        className="absolute inset-0 blur-xs"
+        style={{
+          backgroundImage: `url(${loginBgAsset.url})`,
+          backgroundSize: "100% 100%",
+          backgroundPosition: "center",
+        }}
         aria-hidden="true"
       />
       {/* Dim overlay so the dashboard reads through but the card stays focal */}
