@@ -76,13 +76,13 @@ const Login = () => {
     >
       {/* Blurred background image */}
       <div
-        className="absolute inset-0 bg-cover bg-center scale-110 blur-xl"
+        className="absolute inset-0 bg-cover bg-center scale-105 blur-md"
         style={{ backgroundImage: `url(${loginBgAsset.url})` }}
         aria-hidden="true"
       />
       {/* Soft overlay for contrast & legibility */}
       <div
-        className="absolute inset-0 bg-foreground/40"
+        className="absolute inset-0 bg-foreground/30"
         aria-hidden="true"
       />
 
