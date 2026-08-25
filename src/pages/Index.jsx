@@ -101,10 +101,10 @@ const Index = () => {
           <div className="lg:col-span-2 space-y-4 md:space-y-6">
             <div className="flex flex-col items-center text-center md:flex-row md:justify-between md:items-center md:text-left gap-4">
               <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-gradient-primary animate-fade-in">
+                <h1 className="text-2xl md:text-3xl font-bold text-foreground animate-fade-in">
                   Dashboard
                 </h1>
-                <p className="text-muted-foreground animate-fade-in">Welcome back, {username} 👋</p>
+                <p className="text-muted-foreground animate-fade-in">Your attendance overview, all in one place</p>
               </div>
             </div>
 
@@ -163,7 +163,7 @@ const Index = () => {
                 <CardDescription>Last 7 days</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="h-72 sm:h-80">
+                <div className="h-56 sm:h-60">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                       data={attendanceData}
