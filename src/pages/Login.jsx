@@ -84,9 +84,9 @@ const Login = () => {
         }}
         aria-hidden="true"
       />
-      {/* Dim overlay so the dashboard reads through but the card stays focal */}
+      {/* Light dim overlay — keeps dashboard visible while helping the white heading/footer text read */}
       <div
-        className="absolute inset-0 bg-foreground/55"
+        className="absolute inset-0 bg-foreground/30"
         aria-hidden="true"
       />
 
