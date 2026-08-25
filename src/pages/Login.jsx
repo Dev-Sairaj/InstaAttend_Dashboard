@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { authService } from "../api/services/auth.service";
+import loginBgAsset from "../assets/login-bg.png.asset.json";
 
 import {
   Form,
@@ -70,14 +71,32 @@ const Login = () => {
   const togglePassword = () => setShowPassword(!showPassword);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-instattend-50 to-instattend-100">
-      <div className="w-full max-w-md px-4">
+    <div
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+    >
+      {/* Blurred background image — stretched so the full dashboard shows */}
+      <div
+        className="absolute inset-0 blur-xs"
+        style={{
+          backgroundImage: `url(${loginBgAsset.url})`,
+          backgroundSize: "100% 100%",
+          backgroundPosition: "center",
+        }}
+        aria-hidden="true"
+      />
+      {/* Light dim overlay — keeps dashboard visible while helping the white heading/footer text read */}
+      <div
+        className="absolute inset-0 bg-foreground/30"
+        aria-hidden="true"
+      />
+
+      <div className="relative z-10 w-full max-w-md px-4">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-instattend-800">Insta Attend</h1>
-          <p className="text-gray-600 mt-2">HR Management System</p>
+          <h1 className="text-3xl font-bold text-white drop-shadow-lg">Insta Attend</h1>
+          <p className="text-white/80 mt-2 drop-shadow">HR Management System</p>
         </div>
 
-        <Card className="w-full shadow-lg border-instattend-200">
+        <Card className="w-full shadow-2xl border-instattend-200 backdrop-blur-md bg-card/95">
           <CardHeader className="space-y-2">
             <CardTitle className="text-2xl text-center">Sign In</CardTitle>
             <CardDescription className="text-center">
@@ -176,7 +195,7 @@ const Login = () => {
             </Form>
           </CardContent>
           <CardFooter className="flex justify-center border-t pt-4">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               Don't have an account?{" "}
               <Link
                 to="/register"
@@ -189,7 +208,7 @@ const Login = () => {
         </Card>
 
         <div className="mt-8 text-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-white/80 drop-shadow">
             © {new Date().getFullYear()} Insta Attend Inc. All rights reserved.
           </p>
         </div>
