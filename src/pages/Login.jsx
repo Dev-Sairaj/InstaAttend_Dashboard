@@ -80,9 +80,9 @@ const Login = () => {
         style={{ backgroundImage: `url(${loginBgAsset.url})` }}
         aria-hidden="true"
       />
-      {/* Dark overlay for contrast & legibility */}
+      {/* Soft overlay for contrast & legibility */}
       <div
-        className="absolute inset-0 bg-foreground/55 backdrop-brightness-75"
+        className="absolute inset-0 bg-foreground/40"
         aria-hidden="true"
       />
 
