@@ -191,7 +191,7 @@ const Login = () => {
             </Form>
           </CardContent>
           <CardFooter className="flex justify-center border-t pt-4">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               Don't have an account?{" "}
               <Link
                 to="/register"
@@ -204,7 +204,7 @@ const Login = () => {
         </Card>
 
         <div className="mt-8 text-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-white/80 drop-shadow">
             © {new Date().getFullYear()} Insta Attend Inc. All rights reserved.
           </p>
         </div>
