@@ -76,13 +76,13 @@ const Login = () => {
     >
       {/* Blurred background image */}
       <div
-        className="absolute inset-0 bg-cover bg-center scale-105 blur-sm"
+        className="absolute inset-0 bg-cover bg-center blur-xs"
         style={{ backgroundImage: `url(${loginBgAsset.url})` }}
         aria-hidden="true"
       />
-      {/* Soft overlay for contrast & legibility */}
+      {/* Dim overlay so the dashboard reads through but the card stays focal */}
       <div
-        className="absolute inset-0 bg-foreground/20"
+        className="absolute inset-0 bg-foreground/55"
         aria-hidden="true"
       />
 
