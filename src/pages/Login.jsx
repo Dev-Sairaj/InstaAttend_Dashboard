@@ -74,19 +74,24 @@ const Login = () => {
     <div
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* Blurred background image — stretched so the full dashboard shows */}
+      {/* Blurred background image — design/colors visible, data values obscured */}
       <div
-        className="absolute inset-0 blur-xs"
-        style={{
-          backgroundImage: `url(${loginBgAsset.url})`,
-          backgroundSize: "100% 100%",
-          backgroundPosition: "center",
-        }}
+        className="absolute inset-0 overflow-hidden"
         aria-hidden="true"
-      />
-      {/* Light dim overlay — keeps dashboard visible while helping the white heading/footer text read */}
+      >
+        <div
+          className="absolute inset-0 scale-110 blur-xl"
+          style={{
+            backgroundImage: `url(${loginBgAsset.url})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
+        />
+      </div>
+      {/* Subtle dim overlay — keeps design visible while helping white text read */}
       <div
-        className="absolute inset-0 bg-foreground/30"
+        className="absolute inset-0 bg-foreground/20"
         aria-hidden="true"
       />
 
