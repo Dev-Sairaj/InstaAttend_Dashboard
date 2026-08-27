@@ -19,6 +19,10 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: "var(--font-sans)",
+        mono: "var(--font-mono)",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -28,6 +32,7 @@ const config = {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           dark: "hsl(var(--primary-dark))",
+          light: "hsl(var(--primary-light))",
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
@@ -54,6 +59,8 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        /* Dashboard background color — centralized control */
+        dashboard: "hsl(var(--dashboard-bg))",
         /* Attendance status palette */
         status: {
           present: "hsl(var(--status-present))",

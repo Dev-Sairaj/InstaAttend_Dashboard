@@ -1,126 +1,29 @@
+/**
+ * ============================================================================
+ * MAIN STYLESHEET - InstaAttend Dashboard
+ * ============================================================================
+ * 
+ * Imports the universal theme system and extends with utility classes.
+ * To customize the entire dashboard, edit src/styles/theme.css
+ */
+
+/* Universal theme tokens and glassmorphism classes */
+@import "./styles/theme.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    /* Core surfaces */
-    --background: 210 20% 96%;      /* #F3F5F7 light gray */
-    --foreground: 222 47% 11%;      /* #0F172A */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-    --card: 0 0% 100%;              /* #FFFFFF */
-    --card-foreground: 222 47% 11%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-
-    /* Brand */
-    --primary: 160 84% 39%;         /* #10B981 */
-    --primary-dark: 160 94% 30%;    /* #059669 */
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 165 60% 94%;
-    --secondary-foreground: 222 47% 11%;
-
-    --muted: 165 45% 95%;
-    --muted-foreground: 212 17% 47%; /* #647589 */
-
-    --accent: 160 60% 93%;
-    --accent-foreground: 160 94% 25%;
-
-    --destructive: 0 74% 51%;       /* #DC2626 */
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 156 63% 91%;          /* #D9F5E9 */
-    --input: 214 20% 86%;           /* neutral input border */
-    --input-background: 0 0% 100%;  /* fields stay white on gray page */
-    --ring: 160 84% 39%;
-
-    /* Attendance status tokens */
-    --status-present: 142 71% 45%;  /* #16A34A */
-    --status-late: 38 92% 50%;      /* #F59E0B */
-    --status-absent: 0 74% 51%;     /* #DC2626 */
-    --status-leave: 258 90% 66%;    /* #8B5CF6 */
-    --status-holiday: 199 89% 48%;  /* #0EA5E9 */
-    --status-pending: 215 16% 47%;  /* #64748B */
-
-    /* Elevation & motion */
-    --shadow-soft: 0 1px 2px hsl(160 40% 20% / 0.06), 0 4px 16px hsl(160 40% 20% / 0.06);
-    --shadow-raised: 0 10px 30px -12px hsl(160 60% 25% / 0.28);
-    --shadow-glow: 0 0 0 1px hsl(var(--primary) / 0.18), 0 12px 32px -12px hsl(var(--primary) / 0.45);
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-dark)));
-    --gradient-surface: linear-gradient(160deg, hsl(0 0% 100%), hsl(165 74% 98%));
-    --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
-
-    --radius: 0.75rem;
-  }
-
-  .dark {
-    --background: 190 40% 6%;
-    --foreground: 165 40% 96%;
-
-    --card: 192 32% 10%;
-    --card-foreground: 165 40% 96%;
-
-    --popover: 192 32% 10%;
-    --popover-foreground: 165 40% 96%;
-
-    --primary: 160 84% 45%;
-    --primary-dark: 160 94% 32%;
-    --primary-foreground: 190 40% 6%;
-
-    --secondary: 192 25% 16%;
-    --secondary-foreground: 165 40% 96%;
-
-    --muted: 192 25% 16%;
-    --muted-foreground: 212 17% 65%;
-
-    --accent: 192 30% 18%;
-    --accent-foreground: 160 84% 60%;
-
-    --destructive: 0 74% 45%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 192 25% 20%;
-    --input: 192 25% 26%;
-    --input-background: 192 32% 13%;
-    --ring: 160 84% 45%;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground antialiased;
-  }
-
-  ::selection {
-    background: hsl(var(--primary) / 0.2);
-  }
-
-  /* Refined scrollbars matching the mint surface */
-  ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-  }
-  ::-webkit-scrollbar-track {
-    background: hsl(var(--background));
-  }
-  ::-webkit-scrollbar-thumb {
-    background: hsl(var(--primary) / 0.28);
-    border-radius: 999px;
-    border: 2px solid transparent;
-    background-clip: content-box;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--primary) / 0.5);
-    background-clip: content-box;
-  }
-}
-
+/**
+ * ============================================================================
+ * EXTENDED COMPONENT UTILITIES
+ * ============================================================================
+ * Additional reusable component classes built on top of the theme system
+ */
 @layer components {
   /* Elevated surface used by dashboard cards */
   .surface-card {
@@ -141,13 +44,7 @@
     background-image: var(--gradient-primary);
   }
 
-  .text-gradient-primary {
-    background-image: var(--gradient-primary);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
+  /* Smooth lift on hover with shadow */
   .hover-lift {
     transition:
       transform 0.3s var(--ease-smooth),
@@ -211,6 +108,11 @@
   .stagger-children > *:nth-child(n + 9) { animation-delay: 0.44s; }
 }
 
+/**
+ * ============================================================================
+ * ANIMATIONS & KEYFRAMES
+ * ============================================================================
+ */
 @keyframes shimmer {
   0% { background-position: 100% 50%; }
   100% { background-position: 0 50%; }
@@ -219,6 +121,17 @@
 @keyframes fade-in-up {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* Respect prefers-reduced-motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

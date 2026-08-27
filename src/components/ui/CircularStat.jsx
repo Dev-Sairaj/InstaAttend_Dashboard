@@ -33,13 +33,13 @@ const CircularStat = ({ percentage = 0, color = "#10B981", label, value }) => {
   return (
     <div className="group flex flex-col items-center animate-count-up">
       <div
-        className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center transition-transform duration-300 ease-spring group-hover:scale-105"
+        className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center border border-border transition-transform duration-300 ease-spring group-hover:scale-105"
         style={{
           background: `conic-gradient(${color} ${deg}deg, hsl(var(--border)) ${deg}deg)`,
           boxShadow: `0 0 0 0 ${color}`,
         }}
       >
-        <div className="absolute w-11 h-11 sm:w-14 sm:h-14 bg-card rounded-full flex items-center justify-center shadow-soft">
+        <div className="absolute w-11 h-11 sm:w-14 sm:h-14 bg-card rounded-full border border-border/70 flex items-center justify-center shadow-soft">
           <span className="text-xs sm:text-sm font-bold text-foreground tabular-nums">
             {Math.round(animatedPct)}%
           </span>

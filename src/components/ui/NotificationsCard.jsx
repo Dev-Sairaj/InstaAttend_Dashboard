@@ -40,8 +40,8 @@ const NotificationsCard = () => {
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-      <div className="flex items-center justify-between mb-4">
+    <div className="bg-white rounded-xl shadow-sm border border-emerald-200 p-5">
+      <div className="flex items-center justify-between mb-4 pb-3 border-b border-border">
         <div className="flex items-center gap-2">
           <Bell className="h-4 w-4 text-instattend-500" />
           <h3 className="font-semibold text-gray-800 text-sm">Notifications</h3>
@@ -57,7 +57,7 @@ const NotificationsCard = () => {
       </div>
 
       {!isLoading && notifications.length === 0 ? (
-        <div className="flex flex-col items-center text-center py-6 text-gray-400">
+        <div className="flex flex-col items-center text-center py-6 text-gray-400 border border-dashed border-border rounded-lg">
           <Bell className="h-7 w-7 mb-2 opacity-40" />
           <p className="text-sm">You're all caught up</p>
           <p className="text-xs mt-0.5">No new notifications</p>
@@ -67,7 +67,7 @@ const NotificationsCard = () => {
           {notifications.map((n, idx) => (
             <div
               key={n.id || idx}
-              className="flex items-start gap-3 border-b border-gray-50 last:border-b-0 pb-3 last:pb-0"
+              className="flex items-start gap-3 border-b border-border/60 last:border-b-0 pb-3 last:pb-0"
             >
               <span
                 className={`h-2 w-2 rounded-full mt-1.5 flex-shrink-0 ${
