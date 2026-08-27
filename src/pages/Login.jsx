@@ -5,7 +5,11 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { authService } from "../api/services/auth.service";
-import loginBgAsset from "../assets/login-bg.png.asset.json";
+
+// Image lives in /public, so it's served from the site root at runtime —
+// no import needed, just reference the path directly. Vite copies
+// everything in /public as-is, so this works in both dev and build.
+const loginBgUrl = "/Login_background_2.png";
 
 import {
   Form,
@@ -72,36 +76,56 @@ const Login = () => {
 
   return (
     <div
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center lg:justify-start overflow-hidden"
     >
-      {/* Blurred background image — design/colors visible, data values obscured */}
+      {/* Background photo — kept mostly crisp (only a whisper of blur) so
+          the scene reads clearly, the way a premium product screen would.
+          Data/text on it is intentionally still slightly visible, per design. */}
       <div
         className="absolute inset-0 overflow-hidden"
         aria-hidden="true"
       >
         <div
-          className="absolute inset-0 scale-110 blur-xl"
+          className="absolute inset-0 scale-105 blur-[6px]"
           style={{
-            backgroundImage: `url(${loginBgAsset.url})`,
+            backgroundImage: `url(${loginBgUrl})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
           }}
         />
+        {/* Depth gradient — dark navy/green tint, heavier at top & bottom,
+            lighter through the middle, for a cinematic, professional feel
+            (this is what the fog-free "advanced" look comes from, not blur). */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(6,20,17,0.72) 0%, rgba(6,20,17,0.42) 38%, rgba(6,20,17,0.5) 62%, rgba(6,20,17,0.78) 100%)",
+          }}
+        />
+        {/* Soft radial glow centered behind the card — brand-tinted light
+            source, mimicking the reference's focal spotlight on the modal */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(circle at 22% 42%, rgba(16,185,129,0.22) 0%, rgba(16,185,129,0.08) 32%, rgba(0,0,0,0) 60%)",
+          }}
+        />
       </div>
-      {/* Subtle dim overlay — keeps design visible while helping white text read */}
-      <div
-        className="absolute inset-0 bg-foreground/20"
-        aria-hidden="true"
-      />
 
-      <div className="relative z-10 w-full max-w-md px-4">
+      <div className="relative z-10 w-full max-w-md px-4 lg:pl-20 lg:pr-4 lg:ml-0">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white drop-shadow-lg">Insta Attend</h1>
-          <p className="text-white/80 mt-2 drop-shadow">HR Management System</p>
+          <h1 className="text-3xl font-bold text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.75)]">
+            Insta Attend
+          </h1>
+          <p className="text-white/90 mt-2 drop-shadow-[0_2px_8px_rgba(0,0,0,0.75)]">
+            HR Management System
+          </p>
         </div>
 
-        <Card className="w-full shadow-2xl border-instattend-200 backdrop-blur-md bg-card/95">
+        <Card className="w-full border border-white/40 backdrop-blur-xl bg-card/90 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)_inset] rounded-2xl">
           <CardHeader className="space-y-2">
             <CardTitle className="text-2xl text-center">Sign In</CardTitle>
             <CardDescription className="text-center">
@@ -213,7 +237,7 @@ const Login = () => {
         </Card>
 
         <div className="mt-8 text-center">
-          <p className="text-sm text-white/80 drop-shadow">
+          <p className="text-sm text-white/90 drop-shadow-[0_2px_6px_rgba(0,0,0,0.6)]">
             © {new Date().getFullYear()} Insta Attend Inc. All rights reserved.
           </p>
         </div>

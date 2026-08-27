@@ -37,15 +37,20 @@ const Sidebar = ({ collapsed, onToggle }) => {
   return (
     <aside
       className={cn(
-        "relative bg-card border-r border-border h-screen flex flex-col shadow-soft",
+        "relative border-r border-black/5 bg-white/40 backdrop-blur-xl h-screen flex flex-col overflow-hidden",
+        "shadow-[8px_0_32px_rgba(15,23,42,0.06)]",
         "transition-[width] duration-500 ease-smooth",
         collapsed ? "w-20" : "w-64",
       )}
     >
-      {/* subtle brand wash at the top of the rail */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-primary/8 to-transparent" />
+      {/* ambient glow layer — same soft mint wash as the dashboard cards */}
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-emerald-400/8 to-transparent" />
+        <div className="absolute -top-24 -left-16 h-72 w-72 rounded-full bg-emerald-400/10 blur-[100px]" />
+        <div className="absolute bottom-0 -right-16 h-64 w-64 rounded-full bg-teal-300/10 blur-[100px]" />
+      </div>
 
-      <div className="relative p-4 border-b border-border flex items-center justify-between">
+      <div className="relative p-4 border-b border-black/5 flex items-center justify-between">
         {!collapsed && (
           <div className="flex items-center animate-fade-in">
             <span className="text-2xl font-bold text-gradient-primary">
@@ -61,7 +66,7 @@ const Sidebar = ({ collapsed, onToggle }) => {
         <button
           onClick={onToggle}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          className="text-muted-foreground hover:text-primary rounded-md p-1 transition-all duration-300 ease-smooth hover:bg-primary/10 active:scale-90 focus-ring"
+          className="text-slate-400 hover:text-emerald-600 rounded-md p-1 transition-all duration-300 ease-smooth hover:bg-emerald-500/10 active:scale-90 focus-ring"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -94,16 +99,16 @@ const Sidebar = ({ collapsed, onToggle }) => {
                   title={collapsed ? item.name : undefined}
                   className={cn(
                     "group relative flex items-center px-4 py-3 rounded-lg overflow-hidden",
-                    "text-muted-foreground transition-all duration-300 ease-smooth",
-                    "hover:bg-primary/10 hover:text-primary hover:translate-x-1",
+                    "text-slate-600 transition-all duration-300 ease-smooth",
+                    "hover:bg-emerald-500/10 hover:text-emerald-700 hover:translate-x-1",
                     active &&
-                      "bg-primary/12 text-primary font-medium shadow-soft",
+                      "bg-emerald-500/10 text-emerald-700 font-medium shadow-[0_0_20px_rgba(16,185,129,0.12)]",
                   )}
                 >
                   {/* active indicator bar */}
                   <span
                     className={cn(
-                      "absolute left-0 top-1/2 -translate-y-1/2 h-6 w-1 rounded-r-full gradient-primary",
+                      "absolute left-0 top-1/2 -translate-y-1/2 h-6 w-1 rounded-r-full bg-gradient-to-b from-emerald-400 to-teal-400",
                       "transition-all duration-300 ease-spring",
                       active ? "opacity-100 scale-y-100" : "opacity-0 scale-y-0",
                     )}
@@ -125,17 +130,17 @@ const Sidebar = ({ collapsed, onToggle }) => {
         </ul>
       </nav>
 
-      <div className="relative p-4 border-t border-border">
+      <div className="relative p-4 border-t border-black/5">
         <div className="flex items-center">
-          <div className="h-8 w-8 rounded-full bg-primary/15 flex items-center justify-center text-primary font-semibold transition-transform duration-300 ease-spring hover:scale-110">
+          <div className="h-8 w-8 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-700 font-semibold transition-transform duration-300 ease-spring hover:scale-110">
             {roleInitial}
           </div>
           {!collapsed && currentUser && (
             <div className="ml-3 animate-fade-in">
-              <p className="text-sm font-medium text-foreground">
+              <p className="text-sm font-medium text-slate-800">
                 {currentUser.username}
               </p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-slate-400">
                 {currentUser.email}
               </p>
             </div>

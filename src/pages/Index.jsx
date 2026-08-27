@@ -33,6 +33,16 @@ const parsePercent = (value) => {
   return isNaN(n) ? 0 : n;
 };
 
+// Shared glass-card treatment: frosted panel, hairline mint border,
+// soft ambient shadow. Static — no hover state on the card shell.
+// Colors pulled from the theme tokens (--color-surface, --color-border)
+// so this stays in sync with the rest of the app automatically.
+const GLASS_CARD =
+  "relative overflow-hidden rounded-2xl border border-border bg-surface/60 " +
+  "backdrop-blur-xl shadow-[0_8px_32px_rgba(15,23,42,0.06)] " +
+  "before:absolute before:inset-0 before:pointer-events-none before:rounded-2xl " +
+  "before:bg-gradient-to-b before:from-white/40 before:to-transparent";
+
 const Index = () => {
   const [stat, setStat] = useState({});
   const [attendanceData, setAttendanceData] = useState([]);
@@ -96,112 +106,139 @@ const Index = () => {
       {isLoading ? (
         <DashboardSkeleton />
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
-          {/* ---- Main column ---- */}
-          <div className="lg:col-span-2 space-y-4 md:space-y-6">
-            <div className="flex flex-col items-center text-center md:flex-row md:justify-between md:items-center md:text-left gap-4">
-              <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-foreground animate-fade-in">
-                  Dashboard
-                </h1>
-                <p className="text-muted-foreground animate-fade-in">Your attendance overview, all in one place</p>
-              </div>
-            </div>
-
-            {/* Today's Attendance Status — now the primary hero section */}
-            <Card className="animate-fade-in">
-              <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                <div>
-                  <CardTitle>Today's Attendance Status</CardTitle>
-                  <CardDescription>
-                    {stat.avgWorkingHours
-                      ? `Avg. working hours: ${stat.avgWorkingHours} hrs ${stat.workingHoursChange || ""}`
-                      : "Live breakdown across the team"}
-                  </CardDescription>
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  <span className="font-semibold text-foreground tabular-nums">
-                    {stat.totalEmployees}
-                  </span>{" "}
-                  total employees
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 justify-items-center stagger-children">
-                  <CircularStat
-                    percentage={stat.presentPercentage}
-                    color="#16A34A"
-                    label="Present"
-                    value={stat.presentToday}
-                  />
-                  <CircularStat
-                    percentage={stat.latePercentage}
-                    color="#F59E0B"
-                    label="Late"
-                    value={stat.lateToday}
-                  />
-                  <CircularStat
-                    percentage={stat.absentPercentage}
-                    color="#DC2626"
-                    label="Absent"
-                    value={stat.absentToday}
-                  />
-                  <CircularStat
-                    percentage={stat.leavePercentage}
-                    color="#8B5CF6"
-                    label="On Leave"
-                    value={stat.onLeave}
-                  />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Weekly Trends bar chart (unchanged data source) */}
-            <Card className="animate-fade-in">
-              <CardHeader>
-                <CardTitle>Weekly Trends</CardTitle>
-                <CardDescription>Last 7 days</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="h-56 sm:h-60">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                      data={attendanceData}
-                      margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#D9F5E9" />
-                      <XAxis dataKey="date" tick={{ fill: "#647589", fontSize: 12 }} axisLine={{ stroke: "#D9F5E9" }} tickLine={false} />
-                      <YAxis allowDecimals={false} tick={{ fill: "#647589", fontSize: 12 }} axisLine={{ stroke: "#D9F5E9" }} tickLine={false} />
-                      <Tooltip cursor={{ fill: "rgba(16,185,129,0.06)" }} contentStyle={{ background: "#FFFFFF", border: "1px solid #D9F5E9", borderRadius: 12, boxShadow: "0 10px 30px -12px rgba(5,150,105,0.28)", color: "#0F172A" }} />
-                      <Legend />
-                      <Bar dataKey="present" fill="#16A34A" name="Present" radius={[6, 6, 0, 0]} animationDuration={900} />
-                      <Bar dataKey="absent" fill="#DC2626" name="Absent" radius={[6, 6, 0, 0]} animationDuration={1100} />
-                      <Bar dataKey="late" fill="#F59E0B" name="Late" radius={[6, 6, 0, 0]} animationDuration={1300} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
+        <div className="relative">
+          {/* Ambient glow layer — same glass language, retinted to the
+              theme's primary/info/purple tokens. Fixed + pointer-events-none
+              so it never affects layout or interaction. */}
+          <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+            <div className="absolute -top-32 -left-24 h-96 w-96 rounded-full bg-primary/10 blur-[110px] animate-pulse [animation-duration:6s]" />
+            <div className="absolute top-1/3 -right-32 h-96 w-96 rounded-full bg-info/10 blur-[120px] animate-pulse [animation-duration:8s]" />
+            <div className="absolute bottom-0 left-1/3 h-80 w-80 rounded-full bg-purple/5 blur-[110px]" />
           </div>
 
-          {/* ---- Right rail: today pill + live calendar + notifications ---- */}
-          <div className="space-y-4 md:space-y-6">
-            <div className="flex justify-center lg:justify-end">
-              <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 shadow-soft animate-slide-in-right">
-                <span className="text-sm font-medium">
-                  Today:{" "}
-                  {new Date().toLocaleDateString("en-US", {
-                    weekday: "long",
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </span>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+            {/* ---- Main column ---- */}
+            <div className="lg:col-span-2 space-y-4 md:space-y-6">
+              <div className="flex flex-col items-center text-center md:flex-row md:justify-between md:items-center md:text-left gap-4">
+                <div>
+                  <h1 className="text-2xl md:text-3xl font-bold text-text-primary animate-fade-in">
+                    Dashboard
+                  </h1>
+                  <p className="text-text-muted animate-fade-in">Your attendance overview, all in one place</p>
+                </div>
               </div>
+
+              {/* Today's Attendance Status — now the primary hero section */}
+              <Card className={`${GLASS_CARD} animate-fade-in`}>
+                <CardHeader className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  <div>
+                    <CardTitle className="text-text-primary">Today's Attendance Status</CardTitle>
+                    <CardDescription className="text-text-muted">
+                      {stat.avgWorkingHours
+                        ? `Avg. working hours: ${stat.avgWorkingHours} hrs ${stat.workingHoursChange || ""}`
+                        : "Live breakdown across the team"}
+                    </CardDescription>
+                  </div>
+                  <div className="text-sm text-text-muted">
+                    <span className="font-semibold text-text-primary tabular-nums">
+                      {stat.totalEmployees}
+                    </span>{" "}
+                    total employees
+                  </div>
+                </CardHeader>
+                <CardContent className="relative">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 justify-items-center stagger-children">
+                    {[
+                      { percentage: stat.presentPercentage, color: "#16A34A", label: "Present", value: stat.presentToday },
+                      { percentage: stat.latePercentage, color: "#F59E0B", label: "Late", value: stat.lateToday },
+                      { percentage: stat.absentPercentage, color: "#DC2626", label: "Absent", value: stat.absentToday },
+                      { percentage: stat.leavePercentage, color: "#8B5CF6", label: "On Leave", value: stat.onLeave },
+                    ].map((s) => (
+                      <div
+                        key={s.label}
+                        className="flex w-full justify-center p-3 rounded-xl bg-primary/[0.03] border border-border"
+                      >
+                        <CircularStat
+                          percentage={s.percentage}
+                          color={s.color}
+                          label={s.label}
+                          value={s.value}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Weekly Trends bar chart (unchanged data source) */}
+              <Card className={`${GLASS_CARD} animate-fade-in`}>
+                <CardHeader className="relative">
+                  <CardTitle className="text-text-primary">Weekly Trends</CardTitle>
+                  <CardDescription className="text-text-muted">Last 7 days</CardDescription>
+                </CardHeader>
+                <CardContent className="relative">
+                  <div className="h-56 sm:h-60">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={attendanceData}
+                        margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" stroke="#D9F5E9" vertical={false} />
+                        <XAxis dataKey="date" tick={{ fill: "#647589", fontSize: 12 }} axisLine={{ stroke: "#D9F5E9" }} tickLine={false} />
+                        <YAxis allowDecimals={false} tick={{ fill: "#647589", fontSize: 12 }} axisLine={{ stroke: "#D9F5E9" }} tickLine={false} />
+                        <Tooltip
+                          cursor={{ fill: "rgba(16,185,129,0.06)" }}
+                          contentStyle={{
+                            background: "#FFFFFF",
+                            border: "1px solid #D9F5E9",
+                            borderRadius: 12,
+                            boxShadow: "0 10px 30px -12px rgba(16,185,129,0.28)",
+                            color: "#0F172A",
+                          }}
+                          labelStyle={{ color: "#647589" }}
+                        />
+                        <Legend />
+                        <Bar dataKey="present" fill="#16A34A" name="Present" radius={[6, 6, 0, 0]} animationDuration={900} />
+                        <Bar dataKey="absent" fill="#DC2626" name="Absent" radius={[6, 6, 0, 0]} animationDuration={1100} />
+                        <Bar dataKey="late" fill="#F59E0B" name="Late" radius={[6, 6, 0, 0]} animationDuration={1300} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
 
-            <MiniCalendar />
-            <NotificationsCard />
+            {/* ---- Right rail: today pill + live calendar + notifications ---- */}
+            <div className="space-y-4 md:space-y-6">
+              <div className="flex justify-center lg:justify-end">
+                <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20 shadow-[0_0_20px_rgba(16,185,129,0.15)] animate-slide-in-right">
+                  <span className="text-sm font-medium">
+                    Today:{" "}
+                    {new Date().toLocaleDateString("en-US", {
+                      weekday: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </span>
+                </div>
+              </div>
+
+              <Card className={`${GLASS_CARD} p-5`}>
+                <div className="relative flex items-center gap-2 mb-4 pb-3 border-b border-border">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <path strokeLinecap="round" d="M16 2v4M8 2v4M3 10h18" />
+                  </svg>
+                  <span className="text-sm font-semibold text-text-primary">Calendar</span>
+                </div>
+                <MiniCalendar />
+              </Card>
+
+              <Card className={`${GLASS_CARD} p-5`}>
+                <NotificationsCard />
+              </Card>
+            </div>
           </div>
         </div>
       )}

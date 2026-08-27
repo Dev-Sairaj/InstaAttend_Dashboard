@@ -70,25 +70,36 @@ const CalendarView = ({
   const goToToday = () => onMonthChange(new Date());
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden relative">
+    <div className="relative bg-surface/60 backdrop-blur-xl rounded-2xl border border-border shadow-[0_8px_32px_rgba(15,23,42,0.06)] overflow-hidden">
+      {/* ambient glow, same language as the rest of the dashboard */}
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute -top-20 -left-16 h-56 w-56 rounded-full bg-primary/10 blur-[90px]" />
+        <div className="absolute bottom-0 right-0 h-48 w-48 rounded-full bg-info/5 blur-[90px]" />
+      </div>
+
       {/* Header: month/year + navigation */}
-      <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-gray-100">
+      <div className="relative flex items-center justify-between px-4 sm:px-6 py-4 border-b border-border">
         <div className="flex items-center gap-2">
-          <h2 className="text-lg sm:text-xl font-bold text-gray-800">
+          <h2 className="text-lg sm:text-xl font-bold text-text-primary">
             {format(currentMonth, "MMMM yyyy")}
           </h2>
           {isLoading && (
-            <Loader2 className="h-4 w-4 text-instattend-400 animate-spin" />
+            <Loader2 className="h-4 w-4 text-primary animate-spin" />
           )}
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={goToToday}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={goToToday}
+            className="border-border bg-surface/60 backdrop-blur-sm hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-300 ease-smooth"
+          >
             Today
           </Button>
           <Button
             variant="outline"
             size="icon"
-            className="h-9 w-9"
+            className="h-9 w-9 border-border bg-surface/60 backdrop-blur-sm hover:bg-primary/10 hover:text-primary hover:border-primary/30 hover:-translate-x-0.5 transition-all duration-300 ease-smooth"
             onClick={goToPrevMonth}
             aria-label="Previous month"
           >
@@ -97,7 +108,7 @@ const CalendarView = ({
           <Button
             variant="outline"
             size="icon"
-            className="h-9 w-9"
+            className="h-9 w-9 border-border bg-surface/60 backdrop-blur-sm hover:bg-primary/10 hover:text-primary hover:border-primary/30 hover:translate-x-0.5 transition-all duration-300 ease-smooth"
             onClick={goToNextMonth}
             aria-label="Next month"
           >
@@ -107,13 +118,13 @@ const CalendarView = ({
       </div>
 
       {/* Weekday header */}
-      <div className="grid grid-cols-7 border-b border-gray-100 bg-gray-50/60">
+      <div className="relative grid grid-cols-7 border-b border-border bg-primary/[0.03]">
         {WEEKDAY_LABELS.map((label) => (
           <div
             key={label}
             className={cn(
               "text-center text-xs font-semibold uppercase tracking-wide py-2",
-              label === "Sun" ? "text-gray-400" : "text-gray-500",
+              label === "Sun" ? "text-text-muted/60" : "text-text-muted",
             )}
           >
             {label}
@@ -122,7 +133,7 @@ const CalendarView = ({
       </div>
 
       {/* Weeks grid */}
-      <div className="divide-y divide-gray-100">
+      <div className="relative divide-y divide-border">
         {weeks.map((week, wIdx) => (
           <div key={wIdx} className="grid grid-cols-7">
             {week.map((d) => {
@@ -142,21 +153,22 @@ const CalendarView = ({
                   key={dateKey}
                   onClick={() => onSelectDate?.(d)}
                   className={cn(
-                    "relative flex flex-col items-center justify-start gap-1 py-2.5 sm:py-3 min-h-[68px] sm:min-h-[84px] border-r border-gray-100 last:border-r-0 transition-colors",
+                    "group relative flex flex-col items-center justify-start gap-1 py-2.5 sm:py-3 min-h-[68px] sm:min-h-[84px] border-r border-border last:border-r-0 transition-all duration-300 ease-smooth",
                     !inMonth && "opacity-40",
-                    sunday && "bg-gray-50",
-                    holiday && "bg-instattend-50/60",
-                    selected && "ring-2 ring-inset ring-instattend-400",
-                    "hover:bg-instattend-50",
+                    sunday && "bg-black/[0.015]",
+                    holiday && "bg-primary/[0.05]",
+                    selected && "ring-2 ring-inset ring-primary shadow-[0_0_16px_rgba(16,185,129,0.15)]",
+                    "hover:bg-primary/[0.06]",
                   )}
                   title={holiday ? holiday.name : undefined}
                 >
                   <span
                     className={cn(
-                      "flex items-center justify-center h-7 w-7 rounded-full text-sm font-medium",
-                      isToday && "bg-instattend-500 text-white",
-                      !isToday && sunday && "text-gray-400",
-                      !isToday && !sunday && "text-gray-700",
+                      "flex items-center justify-center h-7 w-7 rounded-full text-sm font-medium transition-all duration-300 ease-smooth",
+                      isToday &&
+                        "bg-primary text-white shadow-[0_0_14px_rgba(16,185,129,0.55)] group-hover:scale-110",
+                      !isToday && sunday && "text-text-muted/60",
+                      !isToday && !sunday && "text-text-primary group-hover:scale-105",
                     )}
                   >
                     {format(d, "d")}
@@ -167,25 +179,25 @@ const CalendarView = ({
                       className={cn(
                         "h-1.5 w-1.5 rounded-full",
                         holiday.type === "optional"
-                          ? "bg-amber-400"
-                          : "bg-instattend-500",
+                          ? "bg-warning shadow-[0_0_6px_rgba(245,158,11,0.6)]"
+                          : "bg-primary shadow-[0_0_6px_rgba(16,185,129,0.6)]",
                       )}
                     />
                   )}
 
                   {holiday && (
-                    <span className="hidden sm:block text-[10px] leading-tight text-gray-500 px-1 text-center line-clamp-2">
+                    <span className="hidden sm:block text-[10px] leading-tight text-text-muted px-1 text-center line-clamp-2">
                       {holiday.name}
                     </span>
                   )}
 
                   {!holiday && showStats && (
                     <span className="hidden sm:flex items-center gap-1 text-[10px] leading-tight">
-                      <span className="text-green-600 font-medium">
+                      <span className="text-success font-medium">
                         {stats.presentCount}P
                       </span>
                       {stats.absentCount > 0 && (
-                        <span className="text-red-500 font-medium">
+                        <span className="text-error font-medium">
                           {stats.absentCount}A
                         </span>
                       )}
