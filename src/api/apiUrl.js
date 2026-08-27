@@ -4,19 +4,6 @@ export const apiUrl = {
   //Dashboard endpoints
   dashboard: {
     getStats: `/dashboard/stats`,
-    /**
-     * Admin-only per-date company attendance calendar.
-     * filter: "this_month" (default) | "last_15_days" | "last_30_days" | "custom"
-     * startDate/endDate (yyyy-MM-dd) are required when filter is "custom".
-     */
-    getAttendanceCalendar: (filter, startDate, endDate) => {
-      const params = new URLSearchParams();
-      if (filter) params.append("filter", filter);
-      if (startDate) params.append("startDate", startDate);
-      if (endDate) params.append("endDate", endDate);
-      const query = params.toString();
-      return `/dashboard/attendance-calendar${query ? `?${query}` : ""}`;
-    },
   },
 
   // Auth endpoints
@@ -44,6 +31,24 @@ export const apiUrl = {
     checkIn: `/attendance/check-in`,
     checkOut: `/attendance/check-out`,
     getReports: `/attendance/reports`,
+    /**
+     * Per-date attendance calendar.
+     * `id` is REQUIRED — it's the requesting user's id. The backend checks
+     * whether that id belongs to an admin: if so, it returns the
+     * company-wide, per-date attendance overview for all employees;
+     * otherwise it returns just that employee's own calendar.
+     * filter: "this_month" (default) | "last_15_days" | "last_30_days" | "custom"
+     * startDate/endDate (yyyy-MM-dd) are required when filter is "custom".
+     */
+    getCalendar: (filter, id, startDate, endDate) => {
+      const params = new URLSearchParams();
+      if (filter) params.append("filter", filter);
+      if (id) params.append("id", id);
+      if (startDate) params.append("startDate", startDate);
+      if (endDate) params.append("endDate", endDate);
+      const query = params.toString();
+      return `/attendance/calendar${query ? `?${query}` : ""}`;
+    },
   },
 
   // Leave management endpoints

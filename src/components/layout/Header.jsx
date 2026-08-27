@@ -1,4 +1,5 @@
-import { LogOut } from "lucide-react";
+import { LogOut, Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
 import { Button } from "../ui/button";
 import { authService } from "../../api/services/auth.service";
 import { useNavigate } from "react-router-dom";
@@ -6,11 +7,16 @@ import { toast } from "sonner";
 
 const Header = () => {
   const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
 
   const handleLogout = () => {
     authService.logout();
     toast.success("Logged out successfully");
     navigate("/login");
+  };
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
   };
 
   const currentUser = authService.getCurrentUser();
@@ -19,8 +25,24 @@ const Header = () => {
     : "U";
 
   return (
-    <header className="sticky top-0 z-30 h-16 flex items-center justify-end px-6 border-b border-border bg-card/80 backdrop-blur-md supports-[backdrop-filter]:bg-card/70 shadow-soft">
+    // border/60 + a hairline shadow instead of the harder default border —
+    // matches the soft mint palette instead of clashing with it.
+    <header className="sticky top-0 z-30 h-16 flex items-center justify-end px-6 border-b border-border/60 bg-card/80 backdrop-blur-md supports-[backdrop-filter]:bg-card/70 shadow-[0_1px_0_0_hsl(var(--border))]">
       <div className="flex items-center space-x-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleTheme}
+          title={
+            theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
+          }
+        >
+          {theme === "dark" ? (
+            <Sun className="h-5 w-5" />
+          ) : (
+            <Moon className="h-5 w-5" />
+          )}
+        </Button>
         <Button
           variant="ghost"
           size="icon"

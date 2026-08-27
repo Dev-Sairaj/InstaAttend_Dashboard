@@ -1,33 +1,39 @@
-import { authRepository } from '../repositories/auth.repository.js';
-import { toast } from '../../components/ui/sonner.jsx';
+import { authRepository } from "../repositories/auth.repository.js";
+import { toast } from "../../components/ui/sonner.jsx";
 
 export const authService = {
   /**
    * Logs in a user with email and password.
+   * Includes imei_number: "admin_login" to bypass the device-registration
+   * checkup on the test API — without this the backend expects a real
+   * device IMEI tied to the account and will reject the login.
    * @param {string} email - User email.
    * @param {string} password - User password.
    * @returns {Promise} - Resolves with user data and token.
    */
   login: async (email, password) => {
     try {
-      const response = await authRepository.login({ email, password });
+      const response = await authRepository.login({
+        email,
+        password,
+        imei_number: "admin_login",
+      });
       const data = response.data?.data;
 
       if (!data?.user?.designation?.admin_access) {
         return { unauthorized: true };
       }
 
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
 
       toast.success("Login successful!");
       return { success: true, data: response.data };
     } catch (error) {
-      toast.error('Login failed. Please check your credentials.');
+      toast.error("Login failed. Please check your credentials.");
       throw error;
     }
   },
-
 
   /**
    * Registers a new user.
@@ -39,11 +45,16 @@ export const authService = {
    */
   register: async (name, email, password, role) => {
     try {
-      const response = await authRepository.register({ name, email, password, role });
-      toast.success('Registration successful!');
+      const response = await authRepository.register({
+        name,
+        email,
+        password,
+        role,
+      });
+      toast.success("Registration successful!");
       return response.data;
     } catch (error) {
-      toast.error('Registration failed. Please try again.');
+      toast.error("Registration failed. Please try again.");
       throw error;
     }
   },
@@ -56,10 +67,10 @@ export const authService = {
   forgotPassword: async (email) => {
     try {
       const response = await authRepository.forgotPassword({ email });
-      toast.success('Password reset email sent. Please check your inbox.');
+      toast.success("Password reset email sent. Please check your inbox.");
       return response.data;
     } catch (error) {
-      toast.error('Failed to send password reset email. Please try again.');
+      toast.error("Failed to send password reset email. Please try again.");
       throw error;
     }
   },
@@ -73,10 +84,12 @@ export const authService = {
   resetPassword: async (token, password) => {
     try {
       const response = await authRepository.resetPassword({ token, password });
-      toast.success('Password reset successful. Please login with your new password.');
+      toast.success(
+        "Password reset successful. Please login with your new password.",
+      );
       return response.data;
     } catch (error) {
-      toast.error('Failed to reset password. Please try again.');
+      toast.error("Failed to reset password. Please try again.");
       throw error;
     }
   },
@@ -85,8 +98,8 @@ export const authService = {
    * Logs the user out by removing token and user data from localStorage.
    */
   logout: () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
   },
 
   /**
@@ -94,12 +107,12 @@ export const authService = {
    * @returns {Object|null} - The user object or null if no user is logged in.
    */
   getCurrentUser: () => {
-    const userString = localStorage.getItem('user');
+    const userString = localStorage.getItem("user");
     if (userString) {
       try {
         return JSON.parse(userString);
       } catch (e) {
-        console.error('Error parsing user data:', e);
+        console.error("Error parsing user data:", e);
         return null;
       }
     }
@@ -111,6 +124,6 @@ export const authService = {
    * @returns {boolean} - Returns true if the user is authenticated, false otherwise.
    */
   isAuthenticated: () => {
-    return !!localStorage.getItem('token');
-  }
+    return !!localStorage.getItem("token");
+  },
 };

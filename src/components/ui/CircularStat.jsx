@@ -35,7 +35,9 @@ const CircularStat = ({ percentage = 0, color = "#10B981", label, value }) => {
       <div
         className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center border border-border transition-transform duration-300 ease-spring group-hover:scale-105"
         style={{
-          background: `conic-gradient(${color} ${deg}deg, hsl(var(--border)) ${deg}deg)`,
+          // was hsl(var(--border)) — too close to white, so an empty
+          // ring at 0% looked broken/invisible rather than "empty".
+          background: `conic-gradient(${color} ${deg}deg, hsl(var(--muted-foreground) / 0.22) ${deg}deg)`,
           boxShadow: `0 0 0 0 ${color}`,
         }}
       >

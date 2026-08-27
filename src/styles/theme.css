@@ -11,7 +11,7 @@
     --background: 210 20% 96%;
     --foreground: 222 47% 11%;
 
-    --dashboard-bg: 161 76% 97%; /* #F0FDF9 mint */
+    --dashboard-bg: 161 76% 97%;
 
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
@@ -35,26 +35,48 @@
 
     --status-present: 142 71% 45%;
     --status-late: 38 92% 50%;
-    --status-absent: 0 74% 51%;
+    /* Desaturated — was 0 74% 51%. Full-saturation red was the only
+       loud color on an otherwise pastel palette and drew the eye by
+       accident, not design. */
+    --status-absent: 0 45% 58%;
     --status-leave: 258 90% 66%;
     --status-holiday: 199 89% 48%;
     --status-pending: 215 16% 47%;
 
-    --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --font-sans:
+      ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-mono:
+      ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+      "Liberation Mono", monospace;
 
     --radius: 0.75rem;
     --radius-lg: 1rem;
     --radius-md: 0.5rem;
     --radius-sm: 0.375rem;
 
-    --shadow-soft: 0 1px 2px hsl(160 40% 20% / 0.06), 0 4px 16px hsl(160 40% 20% / 0.06);
+    --shadow-soft:
+      0 1px 2px hsl(160 40% 20% / 0.06), 0 4px 16px hsl(160 40% 20% / 0.06);
     --shadow-raised: 0 10px 30px -12px hsl(160 60% 25% / 0.28);
-    --shadow-glow: 0 0 0 1px hsl(var(--primary) / 0.18), 0 12px 32px -12px hsl(var(--primary) / 0.45);
+    --shadow-glow:
+      0 0 0 1px hsl(var(--primary) / 0.18),
+      0 12px 32px -12px hsl(var(--primary) / 0.45);
 
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-dark)));
-    --gradient-surface: linear-gradient(160deg, hsl(0 0% 100%), hsl(165 74% 98%));
-    --gradient-accent: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--primary) / 0.8));
+    --gradient-primary: linear-gradient(
+      135deg,
+      hsl(var(--primary)),
+      hsl(var(--primary-dark))
+    );
+    --gradient-surface: linear-gradient(
+      160deg,
+      hsl(0 0% 100%),
+      hsl(165 74% 98%)
+    );
+    --gradient-accent: linear-gradient(
+      135deg,
+      hsl(var(--accent)),
+      hsl(var(--primary) / 0.8)
+    );
 
     --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
     --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -103,13 +125,22 @@
   }
 }
 
-/* ---- glass-panel (flattened, no nesting) ---- */
+/* ---- glass-panel ---- */
 @layer components {
   .glass-panel {
     @apply relative overflow-hidden rounded-[var(--radius)] border backdrop-blur-[var(--glass-blur)];
     background-color: rgb(var(--glass-bg) / var(--glass-bg-opacity));
     border-color: rgb(255 255 255 / var(--glass-border-opacity));
-    box-shadow: var(--shadow-soft);
+    /* Lighter top edge + inset highlight — this, more than blur, is what
+       reads as "glass" rather than "blurred card". */
+    border-top-color: rgb(255 255 255 / 0.9);
+    box-shadow:
+      var(--shadow-soft),
+      0 1px 0 0 rgb(255 255 255 / 0.6) inset;
+    transition:
+      transform 0.35s var(--ease-smooth),
+      box-shadow 0.35s var(--ease-smooth),
+      border-color 0.35s var(--ease-smooth);
   }
   .glass-panel::before {
     content: "";
@@ -117,12 +148,19 @@
     inset: 0;
     pointer-events: none;
     border-radius: inherit;
-    background: linear-gradient(to bottom, rgb(255 255 255 / var(--glass-inner-opacity)), transparent);
+    background: linear-gradient(
+      to bottom,
+      rgb(255 255 255 / var(--glass-inner-opacity)),
+      transparent
+    );
   }
   .glass-panel:hover {
-    box-shadow: var(--shadow-soft);
+    /* Lift on hover, mint-tinted raised shadow (was flat, no lift). */
+    box-shadow:
+      var(--shadow-raised),
+      0 1px 0 0 rgb(255 255 255 / 0.7) inset;
     border-color: rgb(255 255 255 / var(--glass-border-opacity));
-    transform: translateY(0);
+    transform: translateY(-2px);
   }
   .glass-panel:focus-within {
     box-shadow: var(--shadow-glow);
@@ -161,22 +199,38 @@
   ::selection {
     @apply bg-primary text-primary-foreground;
   }
+
+  /* Thin, mint-tinted scrollbar — replaces the default OS scrollbar,
+     which was the one obviously "unfinished" element on an otherwise
+     fully custom UI. */
   ::-webkit-scrollbar {
-    @apply w-2 h-2;
+    @apply w-1.5 h-1.5;
   }
   ::-webkit-scrollbar-track {
-    @apply bg-muted;
+    background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-primary rounded-full hover:bg-primary-dark;
+    background-color: hsl(var(--primary) / 0.35);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--primary) / 0.6);
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--primary) / 0.35) transparent;
   }
 }
 
 @layer components {
-  input, textarea, select {
+  input,
+  textarea,
+  select {
     font-family: var(--font-sans);
   }
-  input:focus, textarea:focus, select:focus {
+  input:focus,
+  textarea:focus,
+  select:focus {
     @apply outline-none ring-2 ring-primary ring-offset-0;
   }
 }

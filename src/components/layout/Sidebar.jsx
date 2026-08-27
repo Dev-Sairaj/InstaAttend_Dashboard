@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { cn } from "../../lib/utils";
 import {
@@ -14,6 +15,8 @@ import { authService } from "../../api/services/auth.service.js";
 
 const Sidebar = ({ collapsed, onToggle }) => {
   const location = useLocation();
+  const itemRefs = useRef({});
+  const [indicatorTop, setIndicatorTop] = useState(null);
 
   const navItems = [
     { name: "Dashboard", icon: GridIcon, path: "/" },
@@ -24,6 +27,19 @@ const Sidebar = ({ collapsed, onToggle }) => {
     { name: "Calendar", icon: CalendarDays, path: "/calendar" },
     { name: "Settings", icon: Settings, path: "/settings" },
   ];
+
+  // A single indicator slides between items instead of each item
+  // toggling its own bar on/off — reads as motion, not a color swap.
+  useEffect(() => {
+    const activeItem = navItems.find((item) => item.path === location.pathname);
+    const el = activeItem ? itemRefs.current[activeItem.path] : null;
+    if (el) {
+      setIndicatorTop(el.offsetTop + el.offsetHeight / 2 - 12);
+    } else {
+      setIndicatorTop(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname, collapsed]);
 
   const currentUser = authService.getCurrentUser();
   const designationName = currentUser?.designation?.designation_name;
@@ -82,11 +98,26 @@ const Sidebar = ({ collapsed, onToggle }) => {
       </div>
 
       <nav className="relative flex-1 pt-6 overflow-y-auto">
-        <ul className="stagger-children">
+        <ul className="relative stagger-children">
+          {/* shared sliding indicator */}
+          <span
+            className="absolute left-4 w-1 rounded-r-full bg-gradient-primary transition-[top,opacity] duration-350 ease-spring pointer-events-none"
+            style={{
+              top: indicatorTop ?? 0,
+              height: 24,
+              opacity: indicatorTop === null ? 0 : 1,
+            }}
+          />
           {navItems.map((item) => {
             const active = location.pathname === item.path;
             return (
-              <li key={item.name} className="mb-2 px-4">
+              <li
+                key={item.name}
+                className="mb-2 px-4"
+                ref={(el) => {
+                  itemRefs.current[item.path] = el;
+                }}
+              >
                 <Link
                   to={item.path}
                   title={collapsed ? item.name : undefined}
@@ -98,14 +129,6 @@ const Sidebar = ({ collapsed, onToggle }) => {
                       "bg-primary/10 text-primary font-medium shadow-glow",
                   )}
                 >
-                  {/* active indicator bar */}
-                  <span
-                    className={cn(
-                      "absolute left-0 top-1/2 -translate-y-1/2 h-6 w-1 rounded-r-full bg-gradient-primary",
-                      "transition-all duration-300 ease-spring",
-                      active ? "opacity-100 scale-y-100" : "opacity-0 scale-y-0",
-                    )}
-                  />
                   <item.icon
                     className={cn(
                       "h-5 w-5 shrink-0 transition-transform duration-300 ease-spring",
