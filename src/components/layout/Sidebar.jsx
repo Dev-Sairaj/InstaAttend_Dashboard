@@ -28,8 +28,6 @@ const Sidebar = ({ collapsed, onToggle }) => {
     { name: "Settings", icon: Settings, path: "/settings" },
   ];
 
-  // A single indicator slides between items instead of each item
-  // toggling its own bar on/off — reads as motion, not a color swap.
   useEffect(() => {
     const activeItem = navItems.find((item) => item.path === location.pathname);
     const el = activeItem ? itemRefs.current[activeItem.path] : null;
@@ -99,7 +97,6 @@ const Sidebar = ({ collapsed, onToggle }) => {
 
       <nav className="relative flex-1 pt-6 overflow-y-auto">
         <ul className="relative stagger-children">
-          {/* shared sliding indicator */}
           <span
             className="absolute left-4 w-1 rounded-r-full bg-gradient-primary transition-[top,opacity] duration-350 ease-spring pointer-events-none"
             style={{
@@ -123,10 +120,13 @@ const Sidebar = ({ collapsed, onToggle }) => {
                   title={collapsed ? item.name : undefined}
                   className={cn(
                     "group relative flex items-center px-4 py-3 rounded-lg overflow-hidden",
-                    "text-muted-foreground transition-all duration-300 ease-smooth",
+                    // Base label weight bumped to font-medium (was regular
+                    // weight) — thin-weight text on a translucent sidebar
+                    // read as faint/blurry at this font size.
+                    "text-muted-foreground font-medium transition-all duration-300 ease-smooth",
                     "hover:bg-primary/10 hover:text-primary hover:translate-x-1",
                     active &&
-                      "bg-primary/10 text-primary font-medium shadow-glow",
+                      "bg-primary/10 text-primary font-semibold shadow-glow",
                   )}
                 >
                   <item.icon
@@ -153,10 +153,10 @@ const Sidebar = ({ collapsed, onToggle }) => {
           </div>
           {!collapsed && currentUser && (
             <div className="ml-3 animate-fade-in">
-              <p className="text-sm font-medium text-foreground">
+              <p className="text-sm font-semibold text-foreground">
                 {currentUser.username}
               </p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs font-medium text-muted-foreground">
                 {currentUser.email}
               </p>
             </div>

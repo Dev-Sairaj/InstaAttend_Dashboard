@@ -21,11 +21,15 @@ const WEEKDAY_LABELS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 /**
  * Compact month calendar for the dashboard's top-right rail.
  *
+ * Renders as plain content inside the parent's glass-panel Card (no
+ * background of its own) so it inherits the dashboard's theme instead of
+ * nesting a flat box inside a glass box. Text weight/contrast bumped
+ * (font-bold header, font-semibold weekday labels, solid foreground for
+ * date numbers) since thin text on a translucent surface is what read as
+ * "blurry" — combined with the global font-smoothing fix in theme.css,
+ * this renders crisp on standard-DPI displays.
+ *
  * Wired to GET /dashboard/attendance-calendar (via dashboardService).
- * Days that have a real attendance record get a small mint dot under
- * the date — days with no backend data simply show no dot. Nothing here
- * is fabricated; if the API returns nothing for a month, the calendar
- * still renders correctly, just without indicators.
  */
 const MiniCalendar = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -83,20 +87,20 @@ const MiniCalendar = () => {
   }, [currentMonth]);
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-emerald-200 p-4">
-      <div className="flex items-center justify-between mb-3 pb-3 border-b border-border">
+    <div>
+      <div className="flex items-center justify-between mb-3 pb-3 border-b border-border/60">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-bold tracking-wide text-instattend-600 uppercase">
+          <span className="text-xs font-extrabold tracking-wide text-primary uppercase">
             {format(currentMonth, "MMMM yyyy")}
           </span>
           {isLoading && (
-            <Loader2 className="h-3 w-3 text-instattend-400 animate-spin" />
+            <Loader2 className="h-3 w-3 text-primary animate-spin" />
           )}
         </div>
         <div className="flex items-center gap-1">
           <button
             onClick={() => setCurrentMonth((m) => subMonths(m, 1))}
-            className="p-1 rounded border border-transparent hover:border-border hover:bg-gray-100 text-gray-400"
+            className="p-1 rounded border border-transparent hover:border-border hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors"
             aria-label="Previous month"
             type="button"
           >
@@ -104,14 +108,14 @@ const MiniCalendar = () => {
           </button>
           <button
             onClick={() => setCurrentMonth(new Date())}
-            className="px-1.5 py-0.5 rounded border border-transparent hover:border-border text-[10px] font-medium text-instattend-600 hover:bg-instattend-50"
+            className="px-1.5 py-0.5 rounded border border-transparent hover:border-border text-[10px] font-bold text-primary hover:bg-primary/10 transition-colors"
             type="button"
           >
             Today
           </button>
           <button
             onClick={() => setCurrentMonth((m) => addMonths(m, 1))}
-            className="p-1 rounded border border-transparent hover:border-border hover:bg-gray-100 text-gray-400"
+            className="p-1 rounded border border-transparent hover:border-border hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors"
             aria-label="Next month"
             type="button"
           >
@@ -120,9 +124,12 @@ const MiniCalendar = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-7 gap-y-1 pb-1.5 mb-1.5 border-b border-border text-center">
+      <div className="grid grid-cols-7 gap-y-1 pb-1.5 mb-1.5 border-b border-border/60 text-center">
         {WEEKDAY_LABELS.map((d) => (
-          <span key={d} className="text-[10px] font-medium text-gray-400">
+          <span
+            key={d}
+            className="text-[10px] font-bold text-muted-foreground"
+          >
             {d}
           </span>
         ))}
@@ -138,10 +145,11 @@ const MiniCalendar = () => {
             <div key={key} className="flex flex-col items-center py-0.5">
               <span
                 className={cn(
-                  "flex items-center justify-center h-6 w-6 rounded-full text-[11px] border border-transparent transition-colors",
-                  !inMonth && "text-gray-300",
-                  inMonth && !isToday && "text-gray-600 hover:border-border",
-                  isToday && "bg-instattend-500 text-white font-semibold",
+                  "flex items-center justify-center h-6 w-6 rounded-full text-[11px] font-medium border border-transparent transition-all duration-300 ease-smooth",
+                  !inMonth && "text-muted-foreground/50",
+                  inMonth && !isToday && "text-foreground hover:border-border",
+                  isToday &&
+                    "bg-primary text-primary-foreground font-bold shadow-[0_0_10px_hsl(var(--primary)/0.55)]",
                 )}
               >
                 {format(d, "d")}
@@ -149,7 +157,7 @@ const MiniCalendar = () => {
               <span
                 className={cn(
                   "h-1 w-1 rounded-full mt-0.5",
-                  hasData ? "bg-instattend-400" : "bg-transparent",
+                  hasData ? "bg-primary" : "bg-transparent",
                 )}
               />
             </div>
@@ -158,7 +166,7 @@ const MiniCalendar = () => {
       </div>
 
       {!isLoading && !calendarData?.records?.length && (
-        <p className="text-[11px] text-gray-400 mt-3 pt-3 border-t border-border text-center">
+        <p className="text-[11px] font-medium text-muted-foreground mt-3 pt-3 border-t border-border/60 text-center">
           No attendance records for this month yet
         </p>
       )}

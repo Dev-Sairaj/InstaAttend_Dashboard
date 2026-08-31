@@ -20,7 +20,11 @@
     --popover-foreground: 222 47% 11%;
 
     --muted: 165 45% 95%;
-    --muted-foreground: 212 17% 47%;
+    /* Darkened from 212 17% 47% — the old value was too light/washed out
+       and, combined with grayscale antialiasing, read as blurry rather
+       than just "muted". This gives secondary text real contrast while
+       staying clearly distinct from --foreground. */
+    --muted-foreground: 212 15% 34%;
 
     --accent: 160 60% 93%;
     --accent-foreground: 160 94% 25%;
@@ -35,10 +39,9 @@
 
     --status-present: 142 71% 45%;
     --status-late: 38 92% 50%;
-    /* Desaturated — was 0 74% 51%. Full-saturation red was the only
-       loud color on an otherwise pastel palette and drew the eye by
-       accident, not design. */
-    --status-absent: 0 45% 58%;
+    /* Brightened — was 0 45% 58% (desaturated), which read as muddy next
+       to the vivid green/amber/purple/blue status colors. */
+    --status-absent: 0 84% 60%;
     --status-leave: 258 90% 66%;
     --status-holiday: 199 89% 48%;
     --status-pending: 215 16% 47%;
@@ -107,7 +110,7 @@
     --secondary: 192 25% 16%;
     --secondary-foreground: 165 40% 96%;
     --muted: 192 25% 16%;
-    --muted-foreground: 212 17% 65%;
+    --muted-foreground: 212 17% 68%;
     --accent: 192 30% 18%;
     --accent-foreground: 160 84% 60%;
     --destructive: 0 74% 45%;
@@ -131,8 +134,6 @@
     @apply relative overflow-hidden rounded-[var(--radius)] border backdrop-blur-[var(--glass-blur)];
     background-color: rgb(var(--glass-bg) / var(--glass-bg-opacity));
     border-color: rgb(255 255 255 / var(--glass-border-opacity));
-    /* Lighter top edge + inset highlight — this, more than blur, is what
-       reads as "glass" rather than "blurred card". */
     border-top-color: rgb(255 255 255 / 0.9);
     box-shadow:
       var(--shadow-soft),
@@ -141,6 +142,13 @@
       transform 0.35s var(--ease-smooth),
       box-shadow 0.35s var(--ease-smooth),
       border-color 0.35s var(--ease-smooth);
+    /* Promote glass surfaces to their own compositing layer. Chromium/
+       WebKit can otherwise resample descendant text through the
+       backdrop-filter blur layer, making perfectly sharp text look
+       soft — this keeps text crisp regardless of the blur happening
+       behind it. */
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
   .glass-panel::before {
     content: "";
@@ -155,12 +163,11 @@
     );
   }
   .glass-panel:hover {
-    /* Lift on hover, mint-tinted raised shadow (was flat, no lift). */
     box-shadow:
       var(--shadow-raised),
       0 1px 0 0 rgb(255 255 255 / 0.7) inset;
     border-color: rgb(255 255 255 / var(--glass-border-opacity));
-    transform: translateY(-2px);
+    transform: translateY(-2px) translateZ(0);
   }
   .glass-panel:focus-within {
     box-shadow: var(--shadow-glow);
@@ -193,16 +200,22 @@
     @apply border-border;
   }
   body {
-    @apply bg-[hsl(var(--dashboard-bg))] text-foreground antialiased;
+    @apply bg-[hsl(var(--dashboard-bg))] text-foreground;
     font-family: var(--font-sans);
+    /* Removed Tailwind's `antialiased` (-webkit-font-smoothing: antialiased
+       + -moz-osx-font-smoothing: grayscale). That combo is tuned for
+       Retina/high-DPI Mac screens; on standard-DPI displays (most Windows
+       machines) it forces thin grayscale glyphs instead of native
+       ClearType/subpixel rendering, which is exactly what reads as
+       "blurry" text. `auto` lets each OS pick its sharpest rendering path. */
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
+    text-rendering: optimizeLegibility;
   }
   ::selection {
     @apply bg-primary text-primary-foreground;
   }
 
-  /* Thin, mint-tinted scrollbar — replaces the default OS scrollbar,
-     which was the one obviously "unfinished" element on an otherwise
-     fully custom UI. */
   ::-webkit-scrollbar {
     @apply w-1.5 h-1.5;
   }
