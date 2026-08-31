@@ -39,11 +39,14 @@ export const apiUrl = {
      * otherwise it returns just that employee's own calendar.
      * filter: "this_month" (default) | "last_15_days" | "last_30_days" | "custom"
      * startDate/endDate (yyyy-MM-dd) are required when filter is "custom".
+     *
+     * `id` is always appended to the query string, even if empty/undefined
+     * (e.g. `?filter=last_30_days&id=`), to match the confirmed API contract.
      */
     getCalendar: (filter, id, startDate, endDate) => {
       const params = new URLSearchParams();
       if (filter) params.append("filter", filter);
-      if (id) params.append("id", id);
+      params.append("id", id ?? "");
       if (startDate) params.append("startDate", startDate);
       if (endDate) params.append("endDate", endDate);
       const query = params.toString();
