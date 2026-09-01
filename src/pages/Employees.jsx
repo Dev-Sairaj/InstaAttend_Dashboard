@@ -1,5 +1,5 @@
 //updated code
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MainLayout from "../components/layout/MainLayout";
 import AddEmployeeForm from "../components/ui/AddEmployeeForm";
 import UpdateEmployeeForm from "../components/ui/UpdateEmployeeForm";
@@ -9,7 +9,9 @@ import {
   UserPlus,
   Filter,
   FileText,
-  ArrowUpDown,
+  Download,
+  ArrowUp,
+  ArrowDown,
   X,
 } from "lucide-react";
 import { employeeService } from "../api/services/employee.service.js";
@@ -45,10 +47,27 @@ const Employees = () => {
   const [sortBy, setSortBy] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
 
+  // --- Export state ---
+  const [showExportOptions, setShowExportOptions] = useState(false);
+
+  const filterPanelRef = useRef();
+  const exportRef = useRef();
+
   useEffect(() => {
     fetchEmployees().then(() => {});
     fetchDesignations().then(() => {});
     fetchDepartments().then(() => {});
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (filterPanelRef.current && !filterPanelRef.current.contains(e.target))
+        setShowFilterOptions(false);
+      if (exportRef.current && !exportRef.current.contains(e.target))
+        setShowExportOptions(false);
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const fetchDepartments = async () => {
@@ -189,8 +208,6 @@ const Employees = () => {
     setCurrentPage(1);
   };
 
-  const [showExportOptions, setShowExportOptions] = useState(false);
-
   const exportCSV = (data) => {
     const csv = Papa.unparse(
       data.map(
@@ -256,7 +273,7 @@ const Employees = () => {
           </div>
         </div>
 
-        {/* Search and Filter */}
+        {/* Search, Filter and Export */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3 sm:p-4 bg-white rounded-lg shadow-sm">
           <div className="relative w-full sm:w-64 md:w-80 lg:w-96">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -271,47 +288,52 @@ const Employees = () => {
               className="w-full pl-10 pr-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-instattend-500 text-sm sm:text-base"
             />
           </div>
+
           <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0 justify-center sm:justify-end">
-            <div className="relative inline-block text-left">
+            {/* Filter button + panel, wired to department/designation/status/sort state */}
+            <div
+              className="relative inline-block text-left"
+              ref={filterPanelRef}
+            >
               <button
-                onClick={() => setShowFilterOptions(!showFilterOptions)}
-                className={`flex items-center justify-center gap-2 px-3 py-2 border rounded-md text-sm sm:text-base ${
-                  activeFilterCount > 0
-                    ? "border-instattend-500 bg-instattend-50 text-instattend-700"
-                    : "border-gray-300 hover:bg-gray-100"
-                }`}
+                onClick={() => setShowFilterOptions((prev) => !prev)}
+                className="flex items-center justify-center gap-2 bg-white border border-gray-300 px-4 py-2 rounded-full text-sm sm:text-base font-medium text-gray-700 hover:bg-gray-50 shadow-sm transition-all"
               >
                 <Filter className="h-4 w-4" />
-                <span className="hidden xs:inline">Filter</span>
+                <span>Filter</span>
                 {activeFilterCount > 0 && (
-                  <span className="bg-instattend-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  <span className="flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-instattend-600 rounded-full">
                     {activeFilterCount}
                   </span>
                 )}
               </button>
 
               {showFilterOptions && (
-                <div className="absolute right-0 mt-2 w-72 bg-white border rounded-lg shadow-lg z-20 p-4 space-y-4">
+                <div className="absolute right-0 sm:left-0 z-30 mt-2 w-72 sm:w-80 bg-white border rounded-xl shadow-2xl p-4 space-y-4">
                   <div className="flex items-center justify-between">
                     <h3 className="text-sm font-semibold text-gray-700">
-                      Filter & Sort
+                      Filters
                     </h3>
-                    <button onClick={() => setShowFilterOptions(false)}>
-                      <X className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                    <button
+                      onClick={() => setShowFilterOptions(false)}
+                      className="text-gray-400 hover:text-gray-600"
+                    >
+                      <X size={16} />
                     </button>
                   </div>
 
+                  {/* Department */}
                   <div>
                     <label className="block text-xs font-medium text-gray-500 mb-1">
                       Department
                     </label>
                     <select
+                      className="bg-white border border-gray-200 px-3 py-2 rounded-lg text-sm outline-none focus:ring-2 focus:ring-instattend-500 w-full"
                       value={filterDepartment}
                       onChange={(e) => {
                         setFilterDepartment(e.target.value);
                         setCurrentPage(1);
                       }}
-                      className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-instattend-500"
                     >
                       <option value="">All Departments</option>
                       {departments.map((dept) => (
@@ -322,17 +344,18 @@ const Employees = () => {
                     </select>
                   </div>
 
+                  {/* Designation */}
                   <div>
                     <label className="block text-xs font-medium text-gray-500 mb-1">
                       Designation
                     </label>
                     <select
+                      className="bg-white border border-gray-200 px-3 py-2 rounded-lg text-sm outline-none focus:ring-2 focus:ring-instattend-500 w-full"
                       value={filterDesignation}
                       onChange={(e) => {
                         setFilterDesignation(e.target.value);
                         setCurrentPage(1);
                       }}
-                      className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-instattend-500"
                     >
                       <option value="">All Designations</option>
                       {designations.map((desig) => (
@@ -343,17 +366,18 @@ const Employees = () => {
                     </select>
                   </div>
 
+                  {/* Status */}
                   <div>
                     <label className="block text-xs font-medium text-gray-500 mb-1">
                       Status
                     </label>
                     <select
+                      className="bg-white border border-gray-200 px-3 py-2 rounded-lg text-sm outline-none focus:ring-2 focus:ring-instattend-500 w-full"
                       value={filterStatus}
                       onChange={(e) => {
                         setFilterStatus(e.target.value);
                         setCurrentPage(1);
                       }}
-                      className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-instattend-500"
                     >
                       <option value="">All Statuses</option>
                       <option value="Active">Active</option>
@@ -361,74 +385,70 @@ const Employees = () => {
                     </select>
                   </div>
 
-                  <div className="border-t pt-3">
+                  {/* Sort by */}
+                  <div>
                     <label className="block text-xs font-medium text-gray-500 mb-1">
                       Sort By
                     </label>
-                    <select
-                      value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value)}
-                      className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm mb-2 focus:outline-none focus:ring-2 focus:ring-instattend-500"
-                    >
-                      <option value="">None</option>
-                      <option value="name">Name</option>
-                      <option value="department">Department</option>
-                      <option value="designation">Designation</option>
-                    </select>
-
-                    {sortBy && (
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => setSortOrder("asc")}
-                          className={`flex-1 flex items-center justify-center gap-1 text-xs px-2 py-1.5 rounded-md border ${
-                            sortOrder === "asc"
-                              ? "bg-instattend-600 text-white border-instattend-600"
-                              : "border-gray-300 hover:bg-gray-50"
-                          }`}
-                        >
-                          <ArrowUpDown className="h-3 w-3" /> Ascending
-                        </button>
-                        <button
-                          onClick={() => setSortOrder("desc")}
-                          className={`flex-1 flex items-center justify-center gap-1 text-xs px-2 py-1.5 rounded-md border ${
-                            sortOrder === "desc"
-                              ? "bg-instattend-600 text-white border-instattend-600"
-                              : "border-gray-300 hover:bg-gray-50"
-                          }`}
-                        >
-                          <ArrowUpDown className="h-3 w-3" /> Descending
-                        </button>
-                      </div>
-                    )}
+                    <div className="flex items-center gap-2">
+                      <select
+                        className="bg-white border border-gray-200 px-3 py-2 rounded-lg text-sm outline-none focus:ring-2 focus:ring-instattend-500 w-full"
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                      >
+                        <option value="">None</option>
+                        <option value="name">Employee Name</option>
+                        <option value="department">Department</option>
+                        <option value="designation">Designation</option>
+                      </select>
+                      <button
+                        onClick={() =>
+                          setSortOrder((prev) =>
+                            prev === "asc" ? "desc" : "asc",
+                          )
+                        }
+                        className="flex items-center gap-1 bg-white border border-gray-200 px-3 py-2 rounded-lg text-sm hover:bg-gray-50 transition-colors shrink-0"
+                        title={sortOrder === "asc" ? "Ascending" : "Descending"}
+                      >
+                        {sortOrder === "asc" ? (
+                          <ArrowUp size={14} />
+                        ) : (
+                          <ArrowDown size={14} />
+                        )}
+                      </button>
+                    </div>
                   </div>
 
-                  <button
-                    onClick={clearFilters}
-                    className="w-full text-center text-sm text-instattend-600 hover:text-instattend-800 font-medium pt-1"
-                  >
-                    Clear all filters
-                  </button>
+                  <div className="flex justify-end pt-1 border-t border-gray-100">
+                    <button
+                      onClick={clearFilters}
+                      className="text-sm text-gray-500 hover:text-instattend-600 font-medium px-2 py-1"
+                    >
+                      Clear All
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
 
-            <div className="relative inline-block text-left">
+            {/* Export - single button styled as a green pill, logic unchanged */}
+            <div className="relative inline-block text-left" ref={exportRef}>
               <button
-                onClick={() => setShowExportOptions(!showExportOptions)}
-                className="flex items-center justify-center gap-2 px-3 py-2 border border-gray-300 rounded-md hover:bg-gray-100 text-sm sm:text-base"
+                onClick={() => setShowExportOptions((prev) => !prev)}
+                className="flex items-center justify-center gap-2 bg-emerald-600 text-white px-5 py-2 rounded-full hover:bg-emerald-700 shadow-sm transition-all text-sm sm:text-base font-medium"
               >
-                <FileText className="h-4 w-4" />
-                <span className="hidden xs:inline">Export</span>
+                <Download className="h-4 w-4" />
+                <span>Export</span>
               </button>
 
               {showExportOptions && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-md z-10">
+                <div className="absolute right-0 z-20 mt-2 w-48 bg-white border rounded-lg shadow-xl py-1">
                   <button
                     onClick={() => {
                       exportCSV(filteredEmployees);
                       setShowExportOptions(false);
                     }}
-                    className="w-full px-4 py-2 text-sm hover:bg-gray-100 text-left"
+                    className="block w-full px-4 py-2 text-left text-sm hover:bg-gray-50"
                   >
                     Export as CSV
                   </button>
@@ -437,7 +457,7 @@ const Employees = () => {
                       exportPDF(filteredEmployees);
                       setShowExportOptions(false);
                     }}
-                    className="w-full px-4 py-2 text-sm hover:bg-gray-100 text-left"
+                    className="block w-full px-4 py-2 text-left text-sm hover:bg-gray-50"
                   >
                     Export as PDF
                   </button>

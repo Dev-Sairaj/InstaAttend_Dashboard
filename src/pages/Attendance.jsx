@@ -13,6 +13,7 @@ import {
   ArrowUp,
   ArrowDown,
   ArrowUpDown,
+  X,
 } from "lucide-react";
 import MainLayout from "../components/layout/MainLayout";
 import { jsPDF } from "jspdf";
@@ -39,16 +40,6 @@ const TABLE_COLUMNS = [
   { label: "Out Location", key: "outLocation" },
   { label: "Work Hours", key: "workHours" },
   { label: "Status", key: "status" },
-];
-
-// Only expose the columns that make sense to sort by in the dropdown
-const SORT_OPTIONS = [
-  { label: "Date", key: "date" },
-  { label: "Employee Name", key: "name" },
-  { label: "Department", key: "department" },
-  { label: "Designation", key: "designation" },
-  { label: "Status", key: "status" },
-  { label: "Work Hours", key: "workHours" },
 ];
 
 const Attendance = () => {
@@ -82,6 +73,15 @@ const Attendance = () => {
     () => [...new Set(allAttendance.map((e) => e.name))].sort(),
     [allAttendance],
   );
+
+  // Count of active filters, shown as a badge on the Date Range button
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (filters.dateRange.startDate || filters.dateRange.endDate) count += 1;
+    if (filters.name) count += 1;
+    if (filters.status) count += 1;
+    return count;
+  }, [filters]);
 
   const transformAttendanceData = useCallback((data) => {
     return data.map((emp) => ({
@@ -242,6 +242,7 @@ const Attendance = () => {
     }
   }, [currentPage, totalPages]);
 
+  // ---- Export logic (unchanged) ----
   const handleExportExcel = useCallback(() => {
     const formattedHeaders = [
       "Date",
@@ -320,6 +321,7 @@ const Attendance = () => {
     }
 
     XLSX.writeFile(workbook, `${fileName}.xlsx`);
+    setShowExportOptions(false);
   }, [filteredData, filters]);
 
   const handleExportPDF = useCallback(() => {
@@ -355,6 +357,7 @@ const Attendance = () => {
       headStyles: { fillColor: [79, 70, 229], textColor: 255 },
     });
     doc.save("attendance.pdf");
+    setShowExportOptions(false);
   }, [filteredData, filters.dateRange]);
 
   const handleDateRangeChange = (item) =>
@@ -420,9 +423,12 @@ const Attendance = () => {
           </button>
         </div>
 
+        {/* Inline filter bar — matches the reference design:
+            Search | Date Range | Employee | Status | Clear All ..... Export */}
         <div
           className={`md:flex flex-wrap gap-3 items-center mb-6 ${showMobileMenu ? "flex flex-col" : "hidden md:flex"}`}
         >
+          {/* Search */}
           <div className="relative w-full md:w-64">
             <Search
               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -437,22 +443,23 @@ const Attendance = () => {
             />
           </div>
 
+          {/* Date Range */}
           <div className="relative w-full md:w-auto" ref={datePickerRef}>
             <button
-              onClick={() => setShowDatePicker(!showDatePicker)}
-              className="flex items-center justify-between gap-2 bg-white border border-gray-200 px-4 py-2 rounded-lg w-full hover:bg-gray-50 transition-colors"
+              onClick={() => setShowDatePicker((prev) => !prev)}
+              className="flex items-center justify-between gap-2 bg-white border border-gray-200 px-4 py-2 rounded-lg w-full md:w-auto hover:bg-gray-50 transition-colors text-sm text-gray-600 shadow-sm"
             >
-              <div className="flex items-center gap-2 text-sm text-gray-600">
+              <span className="flex items-center gap-2">
                 <Filter size={14} />
                 {formatDateRangeDisplay()}
-              </div>
+              </span>
               {filters.dateRange.startDate && (
                 <span
                   onClick={(e) => {
                     e.stopPropagation();
                     clearDateRange();
                   }}
-                  className="hover:text-red-500 text-lg"
+                  className="hover:text-red-500 text-lg leading-none"
                 >
                   &times;
                 </span>
@@ -471,8 +478,9 @@ const Attendance = () => {
             )}
           </div>
 
+          {/* Employee */}
           <select
-            className="bg-white border border-gray-200 px-3 py-2 rounded-lg text-sm outline-none focus:ring-2 focus:ring-instattend-500 w-full md:w-auto"
+            className="bg-white border border-gray-200 px-3 py-2 rounded-lg text-sm outline-none focus:ring-2 focus:ring-instattend-500 w-full md:w-auto shadow-sm text-gray-600"
             value={filters.name}
             onChange={(e) =>
               setFilters((prev) => ({ ...prev, name: e.target.value }))
@@ -486,8 +494,9 @@ const Attendance = () => {
             ))}
           </select>
 
+          {/* Status */}
           <select
-            className="bg-white border border-gray-200 px-3 py-2 rounded-lg text-sm outline-none focus:ring-2 focus:ring-instattend-500 w-full md:w-auto"
+            className="bg-white border border-gray-200 px-3 py-2 rounded-lg text-sm outline-none focus:ring-2 focus:ring-instattend-500 w-full md:w-auto shadow-sm text-gray-600"
             value={filters.status}
             onChange={(e) =>
               setFilters((prev) => ({ ...prev, status: e.target.value }))
@@ -500,53 +509,25 @@ const Attendance = () => {
             <option value="Half Day">Half Day</option>
           </select>
 
-          {/* Sort by */}
-          <div className="flex items-center gap-2 w-full md:w-auto">
-            <select
-              className="bg-white border border-gray-200 px-3 py-2 rounded-lg text-sm outline-none focus:ring-2 focus:ring-instattend-500 w-full md:w-auto"
-              value={sortConfig.key}
-              onChange={(e) =>
-                setSortConfig((prev) => ({ ...prev, key: e.target.value }))
-              }
-            >
-              {SORT_OPTIONS.map((opt) => (
-                <option key={opt.key} value={opt.key}>
-                  Sort by {opt.label}
-                </option>
-              ))}
-            </select>
+          {/* Clear All */}
+          {activeFilterCount > 0 || searchTerm ? (
             <button
-              onClick={() =>
-                setSortConfig((prev) => ({
-                  ...prev,
-                  direction: prev.direction === "asc" ? "desc" : "asc",
-                }))
-              }
-              className="flex items-center gap-1 bg-white border border-gray-200 px-3 py-2 rounded-lg text-sm hover:bg-gray-50 transition-colors"
-              title={
-                sortConfig.direction === "asc" ? "Ascending" : "Descending"
-              }
+              onClick={clearAllFilters}
+              className="text-sm text-gray-500 hover:text-instattend-600 font-medium px-1"
             >
-              {sortConfig.direction === "asc" ? (
-                <ArrowUp size={14} />
-              ) : (
-                <ArrowDown size={14} />
-              )}
-              {sortConfig.direction === "asc" ? "Asc" : "Desc"}
+              Clear All
             </button>
-          </div>
+          ) : (
+            <span className="text-sm text-gray-300 font-medium px-1 select-none">
+              Clear All
+            </span>
+          )}
 
-          <button
-            onClick={clearAllFilters}
-            className="text-sm text-gray-500 hover:text-instattend-600 font-medium px-2 py-2"
-          >
-            Clear All
-          </button>
-
+          {/* Export - pill button pinned to the right */}
           <div className="relative ml-auto w-full md:w-auto" ref={exportRef}>
             <button
               onClick={() => setShowExportOptions(!showExportOptions)}
-              className="flex items-center justify-center gap-2 bg-instattend-600 text-white px-4 py-2 rounded-lg w-full hover:bg-instattend-700 shadow-sm transition-all"
+              className="flex items-center justify-center gap-2 bg-instattend-600 text-white px-5 py-2 rounded-full w-full md:w-auto font-medium hover:bg-instattend-700 shadow-sm transition-all"
             >
               <Download size={16} />
               Export
